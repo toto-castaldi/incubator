@@ -16,4 +16,6 @@ RUN flatpak install gnome org.freedesktop.Platform 1.4
 
 ADD start.sh .
 
+RUN mkdir -p /app/projects
+
 CMD /start.sh
