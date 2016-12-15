@@ -18,28 +18,35 @@ public class Stepdefs {
 
     @Given("^some tables$")
     public void createTables() throws Throwable {
-        lobby = new Lobby(RandomUtils.nextInt(1,10));
-    }
-
-    @Given("^at least one has four player waiting$")
-    public void at_least_one_has_four_player_waiting() throws Throwable {
-        Table table = lobby.randomTable().get();
-        while (!table.isFull()) {
-            table.playerJoin(new Player());
+        lobby = new Lobby();
+        for (int i = 0; i < RandomUtils.nextInt(1,10); i++) {
+            lobby.addTable(new Table());
         }
-        table.playerLeave(0);
     }
 
-    @When("^Sean choose a table with four player waiting$")
-    public void sean_choose_a_table_with_four_player_waiting() throws Throwable {
+    @Given("^at least (\\d+) table has four player waiting$")
+    public void tablesWithFourPlayers(int tables) throws Throwable {
+        for (int i = 0; i < tables; i++) {
+            Table table = lobby.addTable(new Table());
+            while (!table.isFull()) {
+                table.playerJoin(new Player());
+            }
+            table.playerLeave(0);
+        }
+
+    }
+
+    @When("^(\\w+) choose a table with four player waiting$")
+    public void sean_choose_a_table_with_four_player_waiting(String playerName) throws Throwable {
         choosenTable = lobby.randomTable().get();
         while (choosenTable.playerCount() != 4) {
             choosenTable = lobby.randomTable().get();
         }
-        choosenTable.playerJoin(new Player());
+        Player player = choosenTable.playerJoin(new Player());
+        player.setName(playerName);
     }
 
-    @Then("^the match starts$")
+    @Then("^the match starts on chosen table$")
     public void the_match_starts() throws Throwable {
         assertEquals(choosenTable.getStatus(), Table.STATUS.STARTING);
     }

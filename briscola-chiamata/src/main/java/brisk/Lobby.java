@@ -15,14 +15,16 @@ public class Lobby {
 
     private final List<Table> tables;
 
-    public Lobby(int tablesCount) {
+    public Lobby() {
         tables = Lists.newArrayList();
-        for (int i = 0; i < tablesCount; i++) {
-            tables.add(new Table());
-        }
     }
 
     public Optional<Table> randomTable() {
         return Optional.fromNullable(tables.size() > 0 ? tables.get(RandomUtils.nextInt(0, tables.size())) : null);
+    }
+
+    public Table addTable(Table table) {
+        tables.add(table);
+        return table;
     }
 }

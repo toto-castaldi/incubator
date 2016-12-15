@@ -25,12 +25,13 @@ public class Table {
         return players.size() == MAX_PLAYERS;
     }
 
-    public void playerJoin(Player player) {
+    public Player playerJoin(Player player) {
         int countBefore = playerCount();
         if (countBefore < MAX_PLAYERS) {
             players.add(player);
             status = STATUS.STARTING;
         }
+        return player;
     }
 
     public Optional<Player> playerLeave(int index) {
