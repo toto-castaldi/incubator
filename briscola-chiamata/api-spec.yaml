@@ -1,0 +1,69 @@
+swagger: '2.0'
+info:
+  title: Brisk API
+  description: Move your app forward with the Brisk API
+  version: "1.0.0"
+#host: api.uber.com
+schemes:
+  - http
+basePath: /v1.0.0
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /tables:
+    get:
+      summary: List of tables
+      description: |
+        The Tables endpoint returns information about all the *Table* present in
+        the system
+      tags:
+        - Tables
+      responses:
+        200:
+          description: An array of pables
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Table'
+  /player:
+    post:
+      summary: New Player Join
+      description: |
+        A new player joins
+      tags:
+        - Players
+      parameters:
+        - name: name
+          in: body
+          description: The Player name
+          schema:
+            type: string
+          required: true
+      responses:
+        201:
+          description: Player created and add to the system
+          headers:
+            location:
+              description: The Path of the created Resource
+              type: string
+        409:
+          description: A user with passed *name* is already present in the system 
+definitions:
+  Table:
+    type: object
+    properties:
+      table_id:
+        type: string
+        description: Unique identifier representing a specific table.
+      players:
+        type: array
+        items:
+          $ref: '#/definitions/Player'
+  Player:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Unique identifier representing the Player name
