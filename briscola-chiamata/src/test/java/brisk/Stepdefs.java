@@ -1,9 +1,10 @@
 package brisk;
 
-import cucumber.api.PendingException;
+import com.google.common.collect.Iterables;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -17,26 +18,25 @@ public class Stepdefs {
     private Lobby lobby;
     private Table choosenTable;
 
+    public Stepdefs () {
+        lobby = new Lobby();
+    }
+
     @Given("^some tables$")
     public void createTables() throws Throwable {
-        lobby = new Lobby();
         for (int i = 0; i < RandomUtils.nextInt(1,10); i++) {
             lobby.addTable(new Table());
         }
     }
 
     @Given("^at least (\\d+) table has (\\d+) player waiting$")
-    public void tablesWithFourPlayers(int tables, int players) throws Throwable {
+    public void tablesWithFourPlayers(int tables, int playerCount) throws Throwable {
         for (int i = 0; i < tables; i++) {
             Table table = lobby.addTable(new Table());
-            while (!table.isFull()) {
-                table.playerJoin(new Player());
-            }
-            for (int j = 0; j < 5 - players; j++) {
-                table.playerLeave(0);
+            while (table.playerCount() < playerCount) {
+                table.playerJoin(Player.create(RandomStringUtils.randomAlphabetic(5)));
             }
         }
-
     }
 
     @When("^(\\w+) choose a table with (\\d+) player waiting$")
@@ -45,8 +45,7 @@ public class Stepdefs {
         while (choosenTable.playerCount() != playerCount) {
             choosenTable = lobby.randomTable().get();
         }
-        Player player = choosenTable.playerJoin(new Player());
-        player.setName(playerName);
+        choosenTable.playerJoin(Player.create(playerName));
     }
 
     @Then("^the match starts on chosen table$")
@@ -54,28 +53,24 @@ public class Stepdefs {
         assertEquals(choosenTable.getStatus(), Table.STATUS.STARTING);
     }
 
-    @When("^John choose a table choosen by Sean$")
-    public void john_choose_a_table_choosen_by_Sean() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^last table choosen by (\\w+) is available$")
+    public void lastTbleChoosenIsAvailable(String playerName) throws Throwable {
+        Player player = Player.create(playerName);
+        Table table = player.lastTable().get();
+        assertEquals(table.getStatus(), Table.STATUS.WAITING_FOR_PLAYERS);
     }
 
-    @When("^Sean want leave$")
-    public void sean_want_leave() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @When("^(\\w+) choose a table choosen by (\\w+)$")
+    public void playerChooseATableOfOtherPlayer(String newPlayer, String oldPlayer) throws Throwable {
+        Table tableChoosen = Iterables.tryFind(lobby.getTables(), Table.withPlayer(Player.create(oldPlayer))).get();
+        tableChoosen.playerJoin(Player.create(newPlayer));
     }
 
-    @When("^John want leave$")
-    public void john_want_leave() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^table choosen by Sean is available$")
-    public void table_choosen_by_Sean_is_available() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @When("^(\\w+) should want leave from table$")
+    public void playerShouldWantLeaveFromTable(String playerName) throws Throwable {
+        Player player = Player.findByName(playerName).or(Player.create(playerName));
+        Table tableChoosen = Iterables.tryFind(lobby.getTables(), Table.withPlayer(player)).get();
+        tableChoosen.playerShouldLeave(player);
     }
 
 }
