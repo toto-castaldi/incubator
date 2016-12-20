@@ -1,0 +1,5 @@
+>git clone git@github.com:swagger-api/swagger-ui.git
+#edit url variable in [SWAGGER-UI]/src/main/html/index.html
+>npm install
+>npm run build
+#result is in [SWAGGER-UI]/dist folder

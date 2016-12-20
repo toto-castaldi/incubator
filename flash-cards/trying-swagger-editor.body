@@ -1,0 +1,4 @@
+#swagger editor is avaliable via docker
+>docker pull swaggerapi/swagger-editor
+>docker run -p 80:8080 swaggerapi/swagger-editor
+$open browser http://localhost:80
