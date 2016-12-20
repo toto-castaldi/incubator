@@ -1,0 +1,3 @@
+00 - differenza con il 'var' dopo esecuzione ciclo for
+01 - no doppio 'let' nel blocco
+02 - esempio del 'for' con setTimeout che a differenza del 'var' non ha problemi
