@@ -1,0 +1,5 @@
+apps:
+  - script: 'index.js'
+    name: 'xpt'
+    exec_mode: 'cluster'
+    instances: 0
