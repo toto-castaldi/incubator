@@ -1,0 +1,9 @@
+{
+  "name": "haskell-step-by-step",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4"
+  }
+}
