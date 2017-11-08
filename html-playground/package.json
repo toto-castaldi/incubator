@@ -1,0 +1,14 @@
+{
+  "name": "jspdf-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"no test specified\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "simple-autoreload-server": "^0.2.7"
+  }
+}

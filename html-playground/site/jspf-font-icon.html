@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>JSPF font ICON</title>
+        <style>
+            .cfi {
+                color: green;
+                font-weight: normal;
+                font-size: 13px;
+                display: inline-block;
+                background-color: white;
+            }
+
+            #pdf {
+                display: block;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="cfi">
+            Custom Font Icon
+            <span class="fa fa-camera-retro fa-4x"></span>
+        </div>
+
+
+        <button id="pdf">PDF</button>
+
+        <script src="https://use.fontawesome.com/e46446a8b3.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+        <script>
+            $('#pdf').click(() => {
+                const doc = new jsPDF();
+
+                doc.addHTML(document.getElementsByTagName('div')[0], 10, 10, {}, () => {
+                    doc.save('jspdf-examples.pdf');
+                });
+
+            });
+        </script>
+    </body>
+</html>
