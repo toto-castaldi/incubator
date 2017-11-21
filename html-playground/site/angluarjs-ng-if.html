@@ -1,0 +1,61 @@
+<html ng-app="angularjs">
+    <head>
+        <title>Angularjs Loading Promise</title>
+        <style>
+            .content {
+                position: relative;
+            }
+            .busy .busy-message {
+                background-color: white;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                right: 0px;
+                bottom: 0px;
+            }
+        </style>
+    </head>
+    <body class="test">
+
+
+        <the-if show-data="true"></the-if>
+        <p>-----</p>
+        <the-if show-data="false"></the-if>
+        <p>-----</p>
+        <the-if></the-if>
+
+
+        <script src="js/angular-1.5.7.js"></script>
+        <script>
+          (function () {
+              'use strict';
+
+              angular
+                  .module('angularjs', [])
+                  .directive('theIf',[
+                      '$compile',
+                      function($compile){
+                          const logic = (scope) => {
+                              console.log('scope', scope.showData);
+                              if (scope.showData) {
+                                console.log('truly');
+                              } else {
+                                console.log('falsy');
+                              }
+                          };
+
+                          return {
+                              restrict: 'E',
+                              scope: {
+                                showData : '=?'
+                              },
+                              link : logic,
+                              templateUrl: '/templates/theIf.html'
+                          };
+                      }
+                  ]);
+
+          })();
+        </script>
+    </body>
+</html>
