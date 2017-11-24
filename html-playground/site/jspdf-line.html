@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>JSPDF line</title>
+    </head>
+    <body>
+
+
+        <button id="pdf">PDF</button>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+        <script>
+            $('#pdf').click(() => {
+                const doc = new jsPDF("l", "pt", "a4");
+
+                doc.setFont('OpenSans', 'bold');
+                doc.setFontSize(16);
+                doc.setTextColor('#bfbfb7');
+                doc.text(20,50,"Ble ble");
+
+                doc.setFont('OpenSans', 'bold');
+                doc.setFontSize(12);
+                doc.setTextColor('#bfbfb7');
+                doc.text(Math.floor(103.56000000000002),50,"Bla bla");
+
+                doc.setDrawColor(191,191,191);
+                doc.setLineWidth(2);
+                doc.line(20, 59, 820, 59);
+
+                doc.save('jspdf-examples.pdf');
+            });
+        </script>
+    </body>
+</html>
