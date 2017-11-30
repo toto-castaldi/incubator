@@ -1,0 +1,124 @@
+<html ng-app="angularjs">
+    <head>
+        <title>Angularjs UI Router</title>
+        <style>
+          .active {
+            color: red;
+            font-weight: bold;
+          }
+        </style>
+    </head>
+    <body class="test" >
+      <!--
+      A ui-sref is a directive, and behaves similar to an html href. Instead of referencing a url like an href, it references a state. The ui-sref directive automatically builds a href attribute for you (<a href=...></a>) based on your state’s url.
+      -->
+      <a ui-sref="hello" ui-sref-active="active">Hello</a>
+      <a ui-sref="about" ui-sref-active="active">About</a>
+      <a ui-sref="goodmorning({ greetingId: 0 })" ui-sref-active="active">Goodmorning</a>
+      <a ui-sref="redirectHello" ui-sref-active="active">To Hello</a>
+      <a ui-sref="randomStateTo" ui-sref-active="active">Random State To</a>
+
+      <ui-view></ui-view>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"></script>
+      <script src="//unpkg.com/@uirouter/angularjs@1.0.7/release/angular-ui-router.min.js"></script>
+      <script>
+          (function () {
+              'use strict';
+
+              angular
+                .module('angularjs', ['ui.router'])
+                .component('goodmorning', {
+                  bindings: { greetings: '<' },
+                  template:  '<h3>{{$ctrl.greeting()}} my friend</h3>' +
+                              '<button ng-click="$ctrl.toggleGreeting()">toggle greeting</button>',
+
+                  controller: function() {
+                    const controller = this;
+
+                    controller.greeting = function() {
+                      console.log('greeting', controller.greetings);
+                      return controller.greetings.items[controller.greetings.index];
+                    };
+
+                    controller.toggleGreeting = function() {
+                      console.log('toggleGreeting', controller.greetings);
+                      controller.greetings.index ++;
+                      if (controller.greetings.index >= controller.greetings.items.length) controller.greetings.index = 0;
+                    }
+                  }
+                })
+                .component('randomStateTo', {
+                  template:  '<h3>Going to "{{$ctrl.targetState}}" in {{$ctrl.remaining}} secs</h3>',
+                  controller: function($state, $timeout) {
+                    const controller = this;
+
+                    const items = ['hello','about','goodmorning/0', 'redirectHello'];
+                    controller.targetState = items[Math.floor(Math.random()*items.length)];
+                    controller.remaining = 6;
+
+                    const countDown = () => {
+                      controller.remaining --;
+                      if (controller.remaining === 0) {
+                        $state.go(controller.targetState);
+                      } else {
+                        $timeout(countDown, 1000);
+                      }
+                    };
+
+                    countDown();
+                  }
+                })
+                .config(['$stateProvider', ($stateProvider) => { //provider of UI router (ui.router) //Because $stateProvider is an Angular Provider, you must inject it into a .config() block using AngularJS Dependency Injection. https://docs.angularjs.org/guide/providers#provider-recipe
+
+                  $stateProvider.state({
+                    name: 'hello',
+                    url: '/hello',
+                    template: '<h3>hello world!</h3>'
+                  });
+
+                  $stateProvider.state({
+                    name: 'redirectHello',
+                    url: '/redirectHello',
+                    template: '<h3>Redirecting...</h3>',
+                    redirectTo : function () {
+                      return 'hello';
+                    }
+                  });
+
+
+                  $stateProvider.state({
+                    name: 'about',
+                    url: '/about',
+                    templateUrl: '/templates/about.html'
+                  });
+
+                  $stateProvider.state({
+                    name: 'goodmorning',
+                    url: '/goodmorning/{greetingId}',
+                    component: 'goodmorning',
+                    resolve: {
+                      greetings: function($transition$) {
+                        return {
+                          items : ['whats up', 'hello', 'bye bye'],
+                          index : $transition$.params().greetingId
+                        };
+                      }
+                    }
+                  });
+
+                  $stateProvider.state({
+                    name: 'randomStateTo',
+                    url: '/randomStateTo',
+                    component: 'randomStateTo'
+                  });
+                }])
+                .run(['$transitions', ($transitions) => {
+                  $transitions.onStart({ }, (trans) => {
+                    console.log('transition onStart', trans.$to().label, trans.$to());
+                  });
+                }]);
+          })();
+      </script>
+    </body>
+</html>
