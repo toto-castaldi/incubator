@@ -25,17 +25,20 @@ app.use(expressSession({
 
 
 app.use('/', (req, res, next) => {
-    let p;
+    let p = undefined;
     const reqUid = req.session.uid || (req.body && req.body.uid);
     if (reqUid) {
         p = player.get(reqUid);
-        console.log(`player info already present ${reqUid}`, p);
-    } else {
+        //console.log(`player info already present ${reqUid}`, p);
+    }
+
+    if (p === undefined) {
         let playerUid = uid(10);
         p = player.factory(playerUid);
         req.session.uid = playerUid;
         console.log(`new player ${playerUid}`);
     }
+    
     req.player = p;
     next();
 });

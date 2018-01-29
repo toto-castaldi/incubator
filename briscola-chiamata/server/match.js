@@ -5,6 +5,8 @@ class Match {
     constructor() {
         this.players = [];
         this.cards = [];
+        this.callerPlayerIndex = -1;
+        this.callNumber = undefined;
 
         for (let seed of Object.keys(sharedConstant.CARD_SEED)) {
             Array.from(Array(10)).forEach((x, i) => {
@@ -25,6 +27,12 @@ class Match {
             player.takeCard(card);
         }
 
+        if (this.cards.length === 0) {
+          console.log('all cards to players');
+          //this.callerPlayerIndex = Math.floor(Math.random() * this.players.length);
+          this.callerPlayerIndex = this.players.length -1;
+        }
+
     }
 
     isFull() {
@@ -43,6 +51,33 @@ class Match {
 
     hasPlayer(player) {
         return this.players.find(p => p.uid === player.uid);
+    }
+
+    isPlayerCalling(player) {
+      if (this.calling()) {
+        console.log('isPlayerCalling', player.uid, this.players[this.callerPlayerIndex].uid);
+        return player.uid === this.players[this.callerPlayerIndex].uid;
+      }
+    }
+
+    calling() {
+        return this.callerPlayerIndex !== -1;
+    }
+
+    validCall(callingNumber) {
+      if (this.callNumber === 1 && this.callingNumber > 1) return true;
+      if (this.callNumber === 3 && this.callingNumber !== 1) return true;
+      return this.callingNumber < this.callNumber;
+    }
+
+    call(player, callNumber) {
+      if (this.isPlayerCalling(player) && this.validCall(callNumber)) {
+        this.callNumber = callNumber;
+      }
+    }
+
+    lastCall() {
+      return this.callNumber;
     }
 }
 
