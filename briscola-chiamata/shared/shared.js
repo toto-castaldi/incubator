@@ -2,9 +2,16 @@ const sharedObj = (() => {
     return {
         constant : {
             MATCH : {
+                UNKNOW : 'UNKNOW',
                 WAITING : 'WAITING',
                 CANT_JOIN : 'CANT-JOIN',
-                PLAYING : 'PLAYING'
+                GIVING_CARDS : 'GIVING-CARDS'
+            },
+            CARD_SEED : {
+                CUPS : 'CUPS',
+                COINS : 'COINS',
+                CLUBS : 'CLUBS',
+                SWORDS : 'SWORDS'
             }
         }
     }

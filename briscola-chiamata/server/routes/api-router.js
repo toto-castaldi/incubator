@@ -1,25 +1,40 @@
 const router            = require('express').Router();
-const match             = require('../match.js');
+const match             = require('../match.js').instance;
 const sharedConstant    = require('../../shared/shared.js').constant;
 
 const matchState = (match) => {
-  if (match.isPlaying()) return sharedConstant.MATCH.PLAYING;
-  if (match.isNotFull()) return sharedConstant.MATCH.WAITING;
+    if (!match.isFull()) return sharedConstant.MATCH.WAITING;
+    if (!match.allPlayersHaveCards()) return sharedConstant.MATCH.GIVING_CARDS;
+    return sharedConstant.MATCH.UNKNOW;
 };
 
 router.post('/join-match', (req, res) => {
+    const player = req.player;
 
-    if (req.session.joinId) {
-        res.json({ joined : true, alreadyJoined: true, joinId : req.session.joinId, userState : { match : matchState(match)} });
+    console.log('/join-match', 'player', player);
+
+    if (match.hasPlayer(player)) {
+        res.json({uid : player.uid, joined: true, alreadyJoined: true, userState: {match: matchState(match)}});
     } else {
-        if (match.isNotFull()) {
-            const joinId = match.join();
-            req.session.joinId = joinId;
-            res.json({ joined : true, alreadyJoined: false, joinId, userState : { match : matchState(match)} });
+        if (match.isFull()) {
+            res.json({uid : player.uid, joined : false, userState : { match : sharedConstant.MATCH.CANT_JOIN} });
         } else {
-            res.json({ joined : false, userState : { match : sharedConstant.MATCH.CANT_JOIN} });
+            match.join(player);
+            res.json({uid : player.uid, joined : true, alreadyJoined: false, userState : { match : matchState(match)} });
         }
     }
+
+});
+
+router.post('/give-me-cards', (req, res) => {
+    const player = req.player;
+
+    console.log('/give-me-cards', 'player', player);
+
+    match.giveCards(player);
+
+    res.json({uid : player.uid, userState: {match: matchState(match)}});
+
 });
 
 module.exports = router;

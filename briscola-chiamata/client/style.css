@@ -1,0 +1,25 @@
+body {
+    background-color: lightgray;
+}
+
+#match {
+    min-width: 97vw;
+    min-height: 97vh;
+}
+
+#match.state-giving-cards {
+    border: green 1px solid;
+}
+
+#match.state-cant-join {
+    border: red 1px solid;
+}
+
+#match.state-waiting {
+    border: yellow 3px solid;
+}
+
+#match.state-unknow {
+    border: black 3px solid;
+}
+
