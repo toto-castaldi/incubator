@@ -13,6 +13,7 @@ class Match {
         this.outOfCall = [];
         this.hand = [];
         this.winningPlayerIndex = -1;
+        this.winningCardsInHand = {};
 
         for (let seed of Object.keys(sharedConstant.CARD_SEED)) {
             Array.from(Array(10)).forEach((x, i) => {
@@ -156,6 +157,9 @@ class Match {
         if (this.isCallingSeed()) {
             this.calledSeed = seed;
             console.log('let\'s play !', this.players[this.playingPlayerIndex].uid, this.calledSeed, this.callNumber);
+            this.players.forEach(p => {
+               this.winningCardsInHand[p.uid] = [];
+            });
         } else {
             console.log('no calling seed now');
         }
@@ -172,14 +176,32 @@ class Match {
         }
     }
 
-    winnedCards() {
-        //TODO
-        return [];
+    winnedCards(player) {
+        return this.winningCardsInHand[player.uid];
     }
 
     distributeHand() {
-        //TODO winnedCards
-        return this.players[0];
+        let winner;
+        const winnedCards = [];
+        this.hand.forEach(played => {
+            //console.log(played);
+            if (winner) {
+                if (played.card.better(this.calledSeed, winner.card)) {
+                    console.log(played.card, 'is better', this.calledSeed, winner.card);
+                    winner = played;
+                }
+            } else {
+                console.log('winner card is', played.card);
+                winner = played;
+            }
+           winnedCards.push(played.card);
+        });
+
+        this.winningCardsInHand[winner.player.uid] = this.winningCardsInHand[winner.player.uid].concat(winnedCards);
+
+        //console.log(winner);
+
+        return this.players.find(p => sharedEqualities.player(p, winner.player));
     }
 
     resetHand(player) {
@@ -209,8 +231,8 @@ class Match {
             if (matchPlayer.hasCard(card)) {
                 matchPlayer.removeCard(card);
                 this.hand.push({
-                    uid : player.uid,
-                    card
+                    player,
+                    card: Card.build(card)
                 });
                 this.players[this.playingPlayerIndex] = matchPlayer;
 
@@ -224,7 +246,7 @@ class Match {
                         console.log('reset hand');
                         this.resetHand(winningPlayer);
                     } else {
-                        console.log('match end');
+                        console.log('match ends');
                         this.matchEnd();
                     }
                 } else {

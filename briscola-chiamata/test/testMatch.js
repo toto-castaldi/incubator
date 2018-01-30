@@ -24,15 +24,23 @@ const test = () => {
         match.join(p4);
 
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 3));
-        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 10));
+        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 9));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 8));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 7));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 6));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 5));
-        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 4));
+        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.COINS, 1));
 
         match.giveCard(p1, new Card(sharedConstant.CARD_SEED.CUPS, 1));
+        match.giveCard(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+
+        match.giveCard(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+
+        match.giveCard(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.giveCard(p3, new Card(sharedConstant.CARD_SEED.CUPS, 2));
+
+        match.giveCard(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
         match.giveCards(p0);
         match.giveCards(p1);
@@ -59,6 +67,7 @@ const test = () => {
         });
     };
 
+    //Briscola vince su tutto (primo 3 alre non briscole)
     init(({match, p0, p1, p2, p3, p4}) => {
         match.play(p0, new Card(sharedConstant.CARD_SEED.CUPS, 3));
         match.play(p1, p1.cards[1]);
@@ -66,12 +75,58 @@ const test = () => {
         match.play(p3, p3.cards[0]);
         match.play(p4, p4.cards[0]);
 
-
         assert.lengthOf(match.winnedCards(p0), 5, 'first player wins with 3 of Briscola');
         assert.lengthOf(match.winnedCards(p1), 0, 'player can\'t beat the Briscola');
         assert.lengthOf(match.winnedCards(p2), 0, 'player can\'t beat the Briscola');
         assert.lengthOf(match.winnedCards(p3), 0, 'player can\'t beat the Briscola');
         assert.lengthOf(match.winnedCards(p4), 0, 'player can\'t beat the Briscola');
+    });
+
+    //Briscola vince anche se non prima
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.CUPS, 1));
+        match.play(p2, p2.cards[0]);
+        match.play(p3, p3.cards[0]);
+        match.play(p4, p4.cards[0]);
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 5);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 0);
+    });
+
+    //Briscola vince anche se penultima
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, p2.cards[0]);
+        match.play(p3, new Card(sharedConstant.CARD_SEED.CUPS, 2));
+        match.play(p4, p4.cards[0]);
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 5);
+        assert.lengthOf(match.winnedCards(p4), 0);
+    });
+
+    //Comanda la prima carta senza briscole
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.COINS, 1));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
+
+        //console.log(match);
+
+        assert.lengthOf(match.winnedCards(p0), 5);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 0);
     });
 
 };
