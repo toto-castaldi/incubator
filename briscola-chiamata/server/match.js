@@ -1,6 +1,10 @@
 const sharedConstant    = require('../shared/shared.js').constant;
 const Card              = require('./card.js').factory;
 
+const playerEquality = (p1, p2) => {
+    return p1.uid === p2.uid;
+};
+
 class Match {
     constructor() {
         this.players = [];
@@ -10,6 +14,8 @@ class Match {
         this.calledSeed = undefined;
         this.playingPlayerIndex = -1;
         this.outOfCall = [];
+        this.hand = [];
+        this.winningPlayerIndex = -1;
 
         for (let seed of Object.keys(sharedConstant.CARD_SEED)) {
             Array.from(Array(10)).forEach((x, i) => {
@@ -42,8 +48,16 @@ class Match {
         return this.players.length === 5;
     }
 
+    isWaiting() {
+        return this.players.length < 5;
+    }
+
+    isGivingCards() {
+        return this.isFull() && !this.isMatchEnd() && !this.isPlaying() && !this.allPlayersHaveCards();
+    }
+
     allPlayersHaveCards() {
-        return this.isFull() && this.players.reduce((allPlayersHaveCards, player) => {return allPlayersHaveCards && (player.cards.length > 0)}, true);
+        return this.players.reduce((allPlayersHaveCards, player) => {return allPlayersHaveCards && player.withAllCards()}, true)
     }
 
     join(player) {
@@ -53,7 +67,7 @@ class Match {
     }
 
     hasPlayer(player) {
-        return this.players.find(p => p.uid === player.uid);
+        return this.players.find(p => playerEquality(p, player));
     }
 
     isPlayerCalling(player) {
@@ -105,7 +119,7 @@ class Match {
     call(player, callNumber) {
 
       if (this.isPlayerCalling(player) && this.validCall(callNumber)) {
-          console.log('validCall', callNumber, this.callNumber, this.validCall(callNumber), player.uid);
+          console.log(`validCall ${callNumber} vs ${this.callNumber} by ${player.uid}`);
         this.callNumber = callNumber;
         this.rotateCall();
         console.log(this.callNumber, this.players[this.callerPlayerIndex].uid);
@@ -134,6 +148,81 @@ class Match {
             console.log('let\'s play !', this.players[this.playingPlayerIndex].uid, this.calledSeed, this.callNumber);
         } else {
             console.log('no calling seed now');
+        }
+    }
+
+    isPlaying() {
+        //console.log('is playing', this.callerPlayerIndex, this.playingPlayerIndex , this.calledSeed , this.winningPlayerIndex );
+        return this.callerPlayerIndex !== -1 && this.playingPlayerIndex !== -1 && this.calledSeed !== undefined && this.winningPlayerIndex === -1;
+    }
+
+    isPlayerPlaying(player) {
+        if (this.isPlaying()) {
+            return player.uid === this.players[this.playingPlayerIndex].uid;
+        }
+    }
+
+    distributeHand() {
+        //TODO
+        return this.players[0];
+    }
+
+    resetHand(player) {
+        this.playingPlayerIndex = this.players.indexOf(this.players.find(p => playerEquality(p, player)));
+        this.hand = [];
+    }
+
+    nextPlayingPlayer() {
+        this.playingPlayerIndex++;
+        if (this.playingPlayerIndex === this.players.length) {
+            this.playingPlayerIndex = 0;
+        }
+    }
+
+    matchEnd() {
+        //TODO
+        this.winningPlayerIndex = 0;
+    }
+
+    isMatchEnd() {
+        return this.winningPlayerIndex !== -1;
+    }
+
+    play(player, card) {
+        if (this.isPlayerPlaying(player)) {
+            const matchPlayer = this.players[this.playingPlayerIndex];
+            if (matchPlayer.hasCard(card)) {
+                matchPlayer.removeCard(card);
+                this.hand.push({
+                    uid : player.uid,
+                    card
+                });
+                this.players[this.playingPlayerIndex] = matchPlayer;
+
+                //console.log('player after play', matchPlayer);
+
+                if (this.hand.length === 5) {
+                    console.log('hand finished');
+
+                    const winningPlayer = this.distributeHand();
+                    if (matchPlayer.hasCards()) {
+                        console.log('reset hand');
+                        this.resetHand(winningPlayer);
+                    } else {
+                        console.log('match end');
+                        this.matchEnd();
+                    }
+                } else {
+                    //console.log('next player');
+                    this.nextPlayingPlayer();
+                }
+
+            } else {
+                console.log('player does not have card', card, matchPlayer);
+            }
+            return matchPlayer;
+        } else {
+            console.log('player can\'t play');
         }
     }
 }

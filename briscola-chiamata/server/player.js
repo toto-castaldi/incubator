@@ -1,3 +1,7 @@
+const cardEquality = (c1, c2) => {
+    return c1.seed === c2.seed && c1.number === c2.number;
+};
+
 class Player {
     constructor(uid) {
         this.uid = uid;
@@ -10,6 +14,24 @@ class Player {
 
     takeCard(card) {
         this.cards.push(card);
+    }
+
+    hasCard(card) {
+        return this.cards.find((c) => cardEquality(c, card));
+    }
+
+    removeCard(card) {
+        if (this.hasCard(card)) {
+            this.cards.splice(this.cards.indexOf(this.cards.find((c) => cardEquality(c, card))), 1);
+        }
+    }
+
+    hasCards() {
+        return this.cards.length > 0;
+    }
+
+    withAllCards() {
+        return this.cards.length === 8;
     }
 
 }

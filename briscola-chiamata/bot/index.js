@@ -20,7 +20,7 @@ const seed = () => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log(parsedBody);
+            console.log('from seed', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
@@ -34,7 +34,63 @@ const seed = () => {
         });
 };
 
+const play = () => {
+
+    const card = cards[Math.floor(Math.random() * cards.length)];
+
+    rp({
+        method: 'POST',
+        uri: `${server}/play`,
+        body: {
+            uid,
+            card
+        },
+        json: true
+    })
+        .then(function (parsedBody) {
+            console.log('play', parsedBody);
+
+            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+                join();
+                return;
+            }
+
+            cards = parsedBody.userState.cards;
+
+            playing();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+
+};
+
 const playing = () => {
+    rp({
+        method: 'POST',
+        uri: `${server}/playing`,
+        body: {
+            uid
+        },
+        json: true
+    })
+        .then(function (parsedBody) {
+            //console.log(parsedBody);
+
+            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+                join();
+                return;
+            }
+
+            if (parsedBody.userState.match === sharedConstant.MATCH.PLAYING && parsedBody.userState.you) {
+                play();
+            } else {
+                setTimeout(playing, 1000);
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
 
 };
 
@@ -99,7 +155,7 @@ const call = (lastCall) => {
             if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
                 call(parsedBody.userState.lastCall);
             } else {
-                setTimeout(calling, 3000);
+                setTimeout(calling, 1000);
             }
         })
         .catch(function (err) {
@@ -130,7 +186,7 @@ const calling = () => {
             if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
                 call(parsedBody.userState.lastCall);
             } else {
-                setTimeout(calling, 3000);
+                setTimeout(calling, 1000);
             }
         })
         .catch(function (err) {
@@ -176,7 +232,7 @@ const join = () => {
             console.log(parsedBody);
             uid = parsedBody.uid;
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
-              setTimeout(join, 3000);
+              setTimeout(join, 1000);
             }
             if (parsedBody.userState.match === sharedConstant.MATCH.GIVING_CARDS) {
               requestCard();

@@ -51,6 +51,8 @@ app.use('/api', require('./routes/give-me-cards.js'));
 app.use('/api', require('./routes/join-match.js'));
 app.use('/api', require('./routes/skip.js'));
 app.use('/api', require('./routes/seed.js'));
+app.use('/api', require('./routes/playing.js'));
+app.use('/api', require('./routes/play.js'));
 
 
 app.listen(port, () =>  {

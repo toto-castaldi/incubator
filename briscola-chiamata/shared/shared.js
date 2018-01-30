@@ -8,7 +8,8 @@ const sharedObj = (() => {
                 GIVING_CARDS : 'GIVING-CARDS',
                 CALLING : 'CALLING',
                 PLAYING : 'PLAYING',
-                CALLING_SEED : 'CALLING-SEED'
+                CALLING_SEED : 'CALLING-SEED',
+                END : 'END'
             },
             CARD_SEED : {
                 CUPS : 'CUPS',
