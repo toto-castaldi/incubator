@@ -17,6 +17,14 @@ const sharedObj = (() => {
                 CLUBS : 'CLUBS',
                 SWORDS : 'SWORDS'
             }
+        },
+        equalities : {
+            player : (p1, p2) => {
+                return p1.uid === p2.uid;
+            },
+            card : (c1, c2) => {
+                return c1.seed === c2.seed && c1.number === c2.number;
+            }
         }
     }
 })();

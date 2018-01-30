@@ -1,9 +1,6 @@
 const sharedConstant    = require('../shared/shared.js').constant;
+const sharedEqualities    = require('../shared/shared.js').equalities;
 const Card              = require('./card.js').factory;
-
-const playerEquality = (p1, p2) => {
-    return p1.uid === p2.uid;
-};
 
 class Match {
     constructor() {
@@ -38,8 +35,7 @@ class Match {
 
         if (this.cards.length === 0) {
           console.log('all cards to players');
-          //this.callerPlayerIndex = Math.floor(Math.random() * this.players.length);
-          this.callerPlayerIndex = this.players.length -1;
+          this.callerPlayerIndex = 0; //first player have to call
         }
 
     }
@@ -67,7 +63,7 @@ class Match {
     }
 
     hasPlayer(player) {
-        return this.players.find(p => playerEquality(p, player));
+        return this.players.find(p => sharedEqualities.player(p, player));
     }
 
     isPlayerCalling(player) {
@@ -95,9 +91,16 @@ class Match {
     }
 
     rotateCall() {
-        if (this.outOfCall.length === 5) {
-          this.playingPlayerIndex = this.players.length -1;
-          console.log('let\'s choose seed !', this.players[this.callerPlayerIndex].uid, this.callNumber);
+        if (this.outOfCall.length === 4) {
+            this.players.forEach(p => {
+                const isOneOfSkipped = this.outOfCall.find(pl => sharedEqualities.player(pl, p));
+                if (!isOneOfSkipped) {
+                    this.callerPlayerIndex = this.players.indexOf(this.players.find(pl => sharedEqualities.player(pl, p)));
+                }
+            });
+
+            this.playingPlayerIndex = 0; //first joined player will play for first
+            console.log('let\'s choose seed !', this.players[this.callerPlayerIndex].uid, this.callNumber);
         } else {
             const inc = () => {
                 //console.log('next caller');
@@ -109,7 +112,7 @@ class Match {
             if (this.outOfCall.length === 0) {
                 inc();
             } else {
-                while (this.outOfCall.find(p => p.uid === this.players[this.callerPlayerIndex].uid)) {
+                while (this.outOfCall.find(p => sharedEqualities.player(p, this.players[this.callerPlayerIndex]))) {
                     inc();
                 }
             }
@@ -118,12 +121,17 @@ class Match {
 
     call(player, callNumber) {
 
-      if (this.isPlayerCalling(player) && this.validCall(callNumber)) {
-          console.log(`validCall ${callNumber} vs ${this.callNumber} by ${player.uid}`);
-        this.callNumber = callNumber;
-        this.rotateCall();
-        console.log(this.callNumber, this.players[this.callerPlayerIndex].uid);
-        return true;
+      if (this.isPlayerCalling(player)) {
+          if (this.validCall(callNumber)) {
+              console.log(`validCall ${callNumber} vs ${this.callNumber} by ${player.uid}`);
+              this.callNumber = callNumber;
+              this.rotateCall();
+              return true;
+          } else {
+              console.log('invalid call', player.uid, callNumber);
+          }
+      } else {
+          console.log('player can\' call now', player.uid);
       }
     }
 
@@ -131,6 +139,8 @@ class Match {
         if (this.isPlayerCalling(player)) {
             this.outOfCall.push(player);
             this.rotateCall();
+        } else {
+            console.log('player can\'t skip now', player.uid);
         }
     }
 
@@ -162,13 +172,18 @@ class Match {
         }
     }
 
-    distributeHand() {
+    winnedCards() {
         //TODO
+        return [];
+    }
+
+    distributeHand() {
+        //TODO winnedCards
         return this.players[0];
     }
 
     resetHand(player) {
-        this.playingPlayerIndex = this.players.indexOf(this.players.find(p => playerEquality(p, player)));
+        this.playingPlayerIndex = this.players.indexOf(this.players.find(p => sharedEqualities.player(p, player)));
         this.hand = [];
     }
 
@@ -223,6 +238,16 @@ class Match {
             return matchPlayer;
         } else {
             console.log('player can\'t play');
+        }
+    }
+
+    giveCard(player, card) {
+        if (this.isGivingCards()) {
+            const indexCard = this.cards.indexOf(this.cards.find(c => sharedEqualities.card(c, card)));
+            if (indexCard !== -1) {
+                this.cards.splice(indexCard, 1);
+                player.takeCard(card);
+            }
         }
     }
 }

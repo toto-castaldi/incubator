@@ -1,6 +1,4 @@
-const cardEquality = (c1, c2) => {
-    return c1.seed === c2.seed && c1.number === c2.number;
-};
+const sharedEqualities    = require('../shared/shared.js').equalities;
 
 class Player {
     constructor(uid) {
@@ -17,12 +15,12 @@ class Player {
     }
 
     hasCard(card) {
-        return this.cards.find((c) => cardEquality(c, card));
+        return this.cards.find((c) => sharedEqualities.card(c, card));
     }
 
     removeCard(card) {
         if (this.hasCard(card)) {
-            this.cards.splice(this.cards.indexOf(this.cards.find((c) => cardEquality(c, card))), 1);
+            this.cards.splice(this.cards.indexOf(this.cards.find((c) => sharedEqualities.card(c, card))), 1);
         }
     }
 
