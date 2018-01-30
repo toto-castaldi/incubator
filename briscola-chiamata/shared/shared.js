@@ -6,7 +6,9 @@ const sharedObj = (() => {
                 WAITING : 'WAITING',
                 CANT_JOIN : 'CANT-JOIN',
                 GIVING_CARDS : 'GIVING-CARDS',
-                CALLING : 'CALLING'
+                CALLING : 'CALLING',
+                PLAYING : 'PLAYING',
+                CALLING_SEED : 'CALLING-SEED'
             },
             CARD_SEED : {
                 CUPS : 'CUPS',

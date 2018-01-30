@@ -4,7 +4,6 @@ const port              = process.env.PORT || 3000;
 const path              = require('path');
 const serveStatic       = require('serve-static');
 const expressSession    = require('express-session');
-const apiRouter         = require('./routes/api-router.js');
 const player            = require('./player.js');
 const uid               = require('uid');
 const bodyParser        = require('body-parser');
@@ -46,7 +45,12 @@ app.use('/', (req, res, next) => {
 app.use('/', serveStatic(path.resolve(__dirname, '../client'))); //home page
 app.use('/shared', serveStatic(path.resolve(__dirname, '../shared'))); //shared js
 
-app.use('/api', apiRouter);
+app.use('/api', require('./routes/call.js'));
+app.use('/api', require('./routes/calling.js'));
+app.use('/api', require('./routes/give-me-cards.js'));
+app.use('/api', require('./routes/join-match.js'));
+app.use('/api', require('./routes/skip.js'));
+app.use('/api', require('./routes/seed.js'));
 
 
 app.listen(port, () =>  {
