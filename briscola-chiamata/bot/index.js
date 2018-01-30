@@ -20,7 +20,7 @@ const seed = () => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log('from seed', parsedBody);
+            console.log('seed', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
@@ -104,7 +104,7 @@ const skip = () => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log(parsedBody);
+            console.log('skip', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
@@ -146,7 +146,7 @@ const call = (lastCall) => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log(parsedBody);
+            console.log('call', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
@@ -154,6 +154,8 @@ const call = (lastCall) => {
             }
             if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
                 call(parsedBody.userState.lastCall);
+            } else if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+                seed();
             } else {
                 setTimeout(calling, 1000);
             }
@@ -176,7 +178,7 @@ const calling = () => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log(parsedBody);
+            console.log('calling', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
@@ -185,6 +187,8 @@ const calling = () => {
 
             if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
                 call(parsedBody.userState.lastCall);
+            } else if (parsedBody.userState.match === sharedConstant.MATCH.PLAYING) {
+                playing();
             } else {
                 setTimeout(calling, 1000);
             }
@@ -205,7 +209,7 @@ const requestCard = () => {
         json: true
     })
         .then(function (parsedBody) {
-            console.log(parsedBody);
+            console.log('give-me-cards', parsedBody);
 
             if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
                 join();
