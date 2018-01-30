@@ -152,9 +152,8 @@ const call = (lastCall) => {
                 join();
                 return;
             }
-            if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
-                call(parsedBody.userState.lastCall);
-            } else if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+
+            if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
                 seed();
             } else {
                 setTimeout(calling, 1000);
@@ -187,6 +186,8 @@ const calling = () => {
 
             if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
                 call(parsedBody.userState.lastCall);
+            } else if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+                seed();
             } else if (parsedBody.userState.match === sharedConstant.MATCH.PLAYING) {
                 playing();
             } else {

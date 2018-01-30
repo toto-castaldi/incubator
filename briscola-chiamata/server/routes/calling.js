@@ -7,7 +7,7 @@ router.post('/calling', (req, res) => {
 
     //console.log('/calling', player.uid);
 
-    const isPlayerCalling = match.isPlayerCalling(player);
+    const isPlayerCalling = match.isPlayerCalling(player) || match.isPlayerCallingSeed(player);
 
     if (isPlayerCalling !== undefined) {
       const lastCall = match.lastCall();
