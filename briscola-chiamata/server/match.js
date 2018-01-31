@@ -181,27 +181,23 @@ class Match {
     }
 
     distributeHand() {
-        let winner;
-        const winnedCards = [];
-        this.hand.forEach(played => {
-            //console.log(played);
-            if (winner) {
+        if (this.hand.length > 0) {
+            let winner = this.hand[0];
+            const winnedCards = [];
+            this.hand.forEach(played => {
                 if (!winner.card.beat(this.calledSeed, played.card)) {
                     console.log(played.card, 'beating', winner.card, this.calledSeed);
                     winner = played;
                 }
-            } else {
-                console.log('winner card is', played.card);
-                winner = played;
-            }
-           winnedCards.push(played.card);
-        });
+                winnedCards.push(played.card);
+            });
 
-        this.winningCardsInHand[winner.player.uid] = this.winningCardsInHand[winner.player.uid].concat(winnedCards);
+            this.winningCardsInHand[winner.player.uid] = this.winningCardsInHand[winner.player.uid].concat(winnedCards);
 
-        //console.log(winner);
+            console.log('winner card is ', winner.card);
 
-        return this.players.find(p => sharedEqualities.player(p, winner.player));
+            return this.players.find(p => sharedEqualities.player(p, winner.player));
+        }
     }
 
     resetHand(player) {
