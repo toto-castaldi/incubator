@@ -25,22 +25,26 @@ const test = () => {
 
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 3));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
-        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 9));
+        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CLUBS, 9));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 8));
-        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 7));
+        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CLUBS, 7));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 6));
-        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.CUPS, 5));
+        match.giveCard(p0, new Card(sharedConstant.CARD_SEED.COINS, 2));
         match.giveCard(p0, new Card(sharedConstant.CARD_SEED.COINS, 1));
 
         match.giveCard(p1, new Card(sharedConstant.CARD_SEED.CUPS, 1));
         match.giveCard(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
 
         match.giveCard(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.giveCard(p2, new Card(sharedConstant.CARD_SEED.COINS, 8));
 
         match.giveCard(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
         match.giveCard(p3, new Card(sharedConstant.CARD_SEED.CUPS, 2));
+        match.giveCard(p3, new Card(sharedConstant.CARD_SEED.CUPS, 9));
 
         match.giveCard(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
+        match.giveCard(p4, new Card(sharedConstant.CARD_SEED.COINS, 5));
+        match.giveCard(p4, new Card(sharedConstant.CARD_SEED.CUPS, 7));
 
         match.giveCards(p0);
         match.giveCards(p1);
@@ -70,10 +74,10 @@ const test = () => {
     //Briscola vince su tutto (primo 3 alre non briscole)
     init(({match, p0, p1, p2, p3, p4}) => {
         match.play(p0, new Card(sharedConstant.CARD_SEED.CUPS, 3));
-        match.play(p1, p1.cards[1]);
-        match.play(p2, p2.cards[0]);
-        match.play(p3, p3.cards[0]);
-        match.play(p4, p4.cards[0]);
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
         assert.lengthOf(match.winnedCards(p0), 5, 'first player wins with 3 of Briscola');
         assert.lengthOf(match.winnedCards(p1), 0, 'player can\'t beat the Briscola');
@@ -86,9 +90,9 @@ const test = () => {
     init(({match, p0, p1, p2, p3, p4}) => {
         match.play(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
         match.play(p1, new Card(sharedConstant.CARD_SEED.CUPS, 1));
-        match.play(p2, p2.cards[0]);
-        match.play(p3, p3.cards[0]);
-        match.play(p4, p4.cards[0]);
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
         assert.lengthOf(match.winnedCards(p0), 0);
         assert.lengthOf(match.winnedCards(p1), 5);
@@ -101,9 +105,9 @@ const test = () => {
     init(({match, p0, p1, p2, p3, p4}) => {
         match.play(p0, new Card(sharedConstant.CARD_SEED.SWORDS, 2));
         match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
-        match.play(p2, p2.cards[0]);
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
         match.play(p3, new Card(sharedConstant.CARD_SEED.CUPS, 2));
-        match.play(p4, p4.cards[0]);
+        match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
         assert.lengthOf(match.winnedCards(p0), 0);
         assert.lengthOf(match.winnedCards(p1), 0);
@@ -120,12 +124,85 @@ const test = () => {
         match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
         match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
-        //console.log(match);
+        assert.lengthOf(match.winnedCards(p0), 5);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 0);
+    });
+
+    //Può vincere anche un due !
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.COINS, 2));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.SWORDS, 9));
 
         assert.lengthOf(match.winnedCards(p0), 5);
         assert.lengthOf(match.winnedCards(p1), 0);
         assert.lengthOf(match.winnedCards(p2), 0);
         assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 0);
+    });
+
+    //Strozzo
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.COINS, 2));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.COINS, 5));
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 5);
+    });
+
+    //Strozzo in mezzo
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.COINS, 2));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.COINS, 8));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.COINS, 5));
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 5);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 0);
+    });
+
+    //Mangio la briscola alla fine
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.CUPS, 6));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.SWORDS, 3));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.SWORDS, 10));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.CUPS, 7));
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 0);
+        assert.lengthOf(match.winnedCards(p4), 5);
+    });
+
+    //Mangio la briscola in mezzo
+    init(({match, p0, p1, p2, p3, p4}) => {
+        match.play(p0, new Card(sharedConstant.CARD_SEED.CUPS, 8));
+        match.play(p1, new Card(sharedConstant.CARD_SEED.SWORDS, 1));
+        match.play(p2, new Card(sharedConstant.CARD_SEED.COINS, 8));
+        match.play(p3, new Card(sharedConstant.CARD_SEED.CUPS, 9));
+        match.play(p4, new Card(sharedConstant.CARD_SEED.COINS, 5));
+
+        assert.lengthOf(match.winnedCards(p0), 0);
+        assert.lengthOf(match.winnedCards(p1), 0);
+        assert.lengthOf(match.winnedCards(p2), 0);
+        assert.lengthOf(match.winnedCards(p3), 5);
         assert.lengthOf(match.winnedCards(p4), 0);
     });
 

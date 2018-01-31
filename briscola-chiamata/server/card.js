@@ -4,11 +4,12 @@ class Card {
         this.number = number;
     }
 
-    better(briscolaSeed, card) {
+    beat(briscolaSeed, card) {
         if (this.seed === briscolaSeed && card.seed !== briscolaSeed) return true;
         if (this.seed !== briscolaSeed && card.seed === briscolaSeed) return false;
         if (this.seed === briscolaSeed && card.seed === briscolaSeed) return this.gt(this.number, card.number);
-        if (this.seed !== briscolaSeed && card.seed !== briscolaSeed) return this.gt(this.number, card.number);
+        if (this.seed !== briscolaSeed && card.seed !== briscolaSeed && this.seed !== card.seed) return true;
+        if (this.seed !== briscolaSeed && card.seed !== briscolaSeed && this.seed === card.seed) return this.gt(this.number, card.number);
     }
 
     gt(n1, n2) {

@@ -186,8 +186,8 @@ class Match {
         this.hand.forEach(played => {
             //console.log(played);
             if (winner) {
-                if (played.card.better(this.calledSeed, winner.card)) {
-                    console.log(played.card, 'is better', this.calledSeed, winner.card);
+                if (!winner.card.beat(this.calledSeed, played.card)) {
+                    console.log(played.card, 'beating', winner.card, this.calledSeed);
                     winner = played;
                 }
             } else {
