@@ -8,14 +8,10 @@ router.post('/calling', (req, res) => {
     //console.log('/calling', player.uid);
 
     const isPlayerCalling = match.isPlayerCalling(player) || match.isPlayerCallingSeed(player);
+    const opponentCalling = match.opponentCalling(player);
+    const lastCall = match.lastCall();
 
-    if (isPlayerCalling !== undefined) {
-      const lastCall = match.lastCall();
-
-      res.json({uid : player.uid, userState: {match: matchState(match), you : isPlayerCalling, lastCall}});
-    } else {
-      res.json({uid : player.uid, userState: {match: matchState(match)}});
-    }
+    res.json({uid : player.uid, userState: {match: matchState(match), you : isPlayerCalling, lastCall, opponentCalling }});
 
 });
 

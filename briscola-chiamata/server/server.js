@@ -53,6 +53,7 @@ app.use('/api', require('./routes/skip.js'));
 app.use('/api', require('./routes/seed.js'));
 app.use('/api', require('./routes/playing.js'));
 app.use('/api', require('./routes/play.js'));
+app.use('/api', require('./routes/opponents.js'));
 
 
 app.listen(port, () =>  {

@@ -268,6 +268,34 @@ class Match {
             }
         }
     }
+
+    opponentsOf(player) {
+        const result = [];
+        const playerIndexOf = this.playerIndexOf(player);
+
+        for (let i = playerIndexOf + 1; i < this.players.length; i++) {
+            result.push(this.players[i]);
+        }
+        for (let i = 0; i < playerIndexOf; i++) {
+            result.push(this.players[i]);
+        }
+
+        return result;
+    }
+
+    opponentCalling(player) {
+        if (this.isPlayerPlaying(player) || this.isPlayerCallingSeed(player)) {
+            const others = this.opponentsOf(player);
+            if (others.length > 0 && this.callerPlayerIndex !== 1) {
+                return this.playerIndexOf(this.players[this.callerPlayerIndex], others);
+            }
+        }
+    }
+
+    playerIndexOf(player, others) {
+        const ps = others || this.players;
+        return ps.indexOf(ps.find(p => sharedEqualities.player(p, player)));
+    }
 }
 
 module.exports = {
