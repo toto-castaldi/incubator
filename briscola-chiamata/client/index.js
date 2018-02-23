@@ -3,6 +3,20 @@
     const apiPath = '/api';
     let userState = {};
 
+    const f = (method, path, body) => {
+        if (!body) body = {};
+        body.uid = 'toto';
+        return fetch(`${apiPath}${path}`, {
+            method,
+            body: JSON.stringify(body),
+            mode: 'cors', // no-cors, *same-origin
+            redirect: 'follow', // *manual, error
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        });
+    };
+
     const updateView = () => {
         const matchEl = $('#match');
         removeClasses(matchEl, `state-`);
@@ -18,13 +32,7 @@
     };
 
     const skip = () => {
-        fetch(`${apiPath}/skip`, {
-            method: 'POST',
-            credentials: "same-origin",
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
+        f('POST', `/skip`)
             .then(res => res.json())
             .then(response => {
                 console.log('/skip',response);
@@ -36,16 +44,9 @@
     };
 
     const call = (callNumber) => {
-        fetch(`${apiPath}/call`, {
-            method: 'POST',
-            body: {
+        f('POST', `/call`, {
                 callNumber
-            },
-            credentials: "same-origin",
-            headers: new Headers({
-                'Content-Type': 'application/json'
             })
-        })
             .then(res => res.json())
             .then(response => {
                 console.log('/call',response);
@@ -61,13 +62,7 @@
     };
 
     const calling = () => {
-        fetch(`${apiPath}/calling`, {
-            method: 'POST',
-            credentials: "same-origin",
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
+        f('POST', `/calling` )
             .then(res => res.json())
             .then(response => {
                 console.log('/calling',response);
@@ -109,13 +104,7 @@
 
 
     const loadOpponents = () => {
-        fetch(`${apiPath}/opponents`, {
-            method: 'GET',
-            credentials: "same-origin",
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
+        f('GET', `/opponents` )
             .then(res => res.json())
             .then(response => {
                 console.log('/opponents',response);
@@ -135,13 +124,7 @@
     };
 
     const givingCards = () => {
-        fetch(`${apiPath}/give-me-cards`, {
-            method: 'POST',
-            credentials: "same-origin",
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
+        f('POST', `/give-me-cards`)
             .then(res => res.json())
             .then(response => {
                 console.log('/give-me-cards',response);
@@ -162,14 +145,7 @@
     };
 
     const joinMatch = () => {
-        fetch(`${apiPath}/join-match`, {
-            method: 'POST',
-            credentials: "same-origin",
-            body: {},
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
+        f('POST', `/join-match`)
             .then(res => res.json())
             .then(response => {
                 console.log('/join-match', response);
@@ -197,5 +173,6 @@
 
     updateView();
     joinMatch();
+
 
 })();
