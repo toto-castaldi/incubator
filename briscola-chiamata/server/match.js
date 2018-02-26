@@ -72,12 +72,14 @@ class Match {
         //console.log('isPlayerCalling', player.uid, this.players[this.callerPlayerIndex].uid);
         return player.uid === this.players[this.callerPlayerIndex].uid;
       }
+      return false;
     }
 
     isPlayerCallingSeed(player) {
         if (this.isCallingSeed()) {
             return player.uid === this.players[this.callerPlayerIndex].uid;
         }
+        return false;
     }
 
     calling() {
@@ -124,7 +126,11 @@ class Match {
 
       if (this.isPlayerCalling(player)) {
           if (this.validCall(callNumber)) {
-              console.log(`validCall ${callNumber} vs ${this.callNumber} by ${player.uid}`);
+              if (this.callNumber) {
+                  console.log(`validCall ${callNumber} vs ${this.callNumber} by ${player.uid}`);
+              } else {
+                  console.log(`validCall ${callNumber} by ${player.uid}`);
+              }
               this.callNumber = callNumber;
               this.rotateCall();
               return true;
@@ -283,12 +289,9 @@ class Match {
         return result;
     }
 
-    opponentCalling(player) {
-        if (this.isPlayerPlaying(player) || this.isPlayerCallingSeed(player)) {
-            const others = this.opponentsOf(player);
-            if (others.length > 0 && this.callerPlayerIndex !== 1) {
-                return this.playerIndexOf(this.players[this.callerPlayerIndex], others);
-            }
+    callerPlayer() {
+        if (this.calling()) {
+            return this.players[this.callerPlayerIndex];
         }
     }
 

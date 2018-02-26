@@ -27,6 +27,9 @@ app.use(function(req, res, next) {
 });
 
 app.use((req, res, next) => {
+
+    console.log(req.url);
+
     if (req.url.startsWith(apiPrefix)) {
         let p = undefined;
         const reqUid = (req.body && req.body.uid) || (req.session && req.session.uid);

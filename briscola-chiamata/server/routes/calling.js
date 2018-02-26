@@ -5,13 +5,14 @@ const matchState        = require('./api-router.js').matchState;
 router.post('/calling', (req, res) => {
     const player = req.player;
 
-    //console.log('/calling', player.uid);
-
-    const isPlayerCalling = match.isPlayerCalling(player) || match.isPlayerCallingSeed(player);
-    const opponentCalling = match.opponentCalling(player);
+    const you = match.isPlayerCalling(player) || match.isPlayerCallingSeed(player);
+    const opponentCalling = match.callerPlayer(player);
     const lastCall = match.lastCall();
+    const mathState = matchState(match);
 
-    res.json({uid : player.uid, userState: {match: matchState(match), you : isPlayerCalling, lastCall, opponentCalling }});
+    console.log('/calling', player.uid, mathState, you, lastCall, opponentCalling);
+
+    res.json({uid : player.uid, userState: {match: mathState, you , lastCall, opponentCalling }});
 
 });
 

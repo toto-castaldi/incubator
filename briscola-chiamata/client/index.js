@@ -6,15 +6,20 @@
     const f = (method, path, body) => {
         if (!body) body = {};
         body.uid = 'toto';
-        return fetch(`${apiPath}${path}`, {
+        const options = {
             method,
-            body: JSON.stringify(body),
+            //credentials: "same-origin",
             mode: 'cors', // no-cors, *same-origin
             redirect: 'follow', // *manual, error
             headers: new Headers({
                 'Content-Type': 'application/json'
             })
-        });
+        };
+        if (method === 'POST') {
+            options.body = JSON.stringify(body);
+        }
+
+        return fetch(`${apiPath}${path}`, options);
     };
 
     const updateView = () => {
@@ -45,14 +50,59 @@
 
     const call = (callNumber) => {
         f('POST', `/call`, {
-                callNumber
-            })
+            callNumber
+        })
             .then(res => res.json())
             .then(response => {
                 console.log('/call',response);
                 userState = response.userState;
 
                 setTimeout(calling, 200);
+
+
+            })
+            .catch(error => console.error('Error:', error));
+
+
+    };
+
+    const playing = (seed) => {
+        f('POST', `/playing`, {
+            seed
+        })
+            .then(res => res.json())
+            .then(response => {
+                console.log('/playing',response);
+                userState = response.userState;
+
+                switch (userState.match) {
+                    case sharedObj.constant.MATCH.PLAYING : {
+                        if (userState.you) {
+                            console.log('PLAYYYYYYYYYY');
+                        } else {
+                            setTimeout(playing, 200);
+                        }
+                        break;
+                    }
+                    default : {
+                        break;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+    };
+
+    const seed = (seed) => {
+        f('POST', `/seed`, {
+                seed
+            })
+            .then(res => res.json())
+            .then(response => {
+                console.log('/seed',response);
+                userState = response.userState;
+
+                playing();
 
 
             })
@@ -80,7 +130,7 @@
                             }
                         } else {
                             removeClasses($(`.opponent`), `calling`);
-                            $(`#opponent-${userState.opponentCalling}`).addClass(`calling`);
+                            $(`#opponent-${userState.opponentCalling.uid}`).addClass(`calling`);
                             $(`#calling .card-number`)[0].innerHTML=userState.lastCall;
                             setTimeout(calling, 200);
                         }
@@ -88,6 +138,19 @@
                     }
                     case sharedObj.constant.MATCH.GIVING_CARDS: {
                         setTimeout(calling, 1000);
+                        break;
+                    }
+                    case sharedObj.constant.MATCH.CALLING_SEED: {
+                        if (userState.you) {
+                            const seedToCall = window.prompt('seed','');
+                            if (sharedObj.validSeed(seedToCall)) {
+                                seed(seedToCall);
+                            }
+                        } else {
+                            removeClasses($(`.opponent`), `calling`);
+                            $(`#opponent-${userState.opponentCalling.uid}`).addClass(`calling`);
+                            setTimeout(calling, 200);
+                        }
                         break;
                     }
                     default : {

@@ -123,48 +123,52 @@ const skip = () => {
 
 
 const call = (lastCall) => {
-  let callNumber;
-  if (!callNumber && !lastCall && !have(1) ) callNumber = 1;
-  if (!callNumber && (lastCall === 1 || !lastCall) && !have(3)) callNumber = 3;
-  if (!callNumber && (lastCall === 3 || !lastCall) && !have(10)) callNumber = 10;
-  if (!callNumber && (lastCall === 10 || !lastCall) && !have(9)) callNumber = 9;
-  if (!callNumber && (lastCall === 9 || !lastCall) && !have(8)) callNumber = 8;
-  if (!callNumber && (lastCall === 8 || !lastCall) && !have(7)) callNumber = 7;
-  if (!callNumber && (lastCall === 7 || !lastCall) && !have(6)) callNumber = 6;
-  if (!callNumber && (lastCall === 6 || !lastCall) && !have(5)) callNumber = 5;
-  if (!callNumber && (lastCall === 5 || !lastCall) && !have(4)) callNumber = 4;
-  if (!callNumber && (lastCall === 4 || !lastCall) && !have(2)) callNumber = 2;
+    setTimeout(() => {
+        let callNumber;
+        if (!callNumber && !lastCall && !have(1) ) callNumber = 1;
+        if (!callNumber && (lastCall === 1 || !lastCall) && !have(3)) callNumber = 3;
+        if (!callNumber && (lastCall === 3 || !lastCall) && !have(10)) callNumber = 10;
+        if (!callNumber && (lastCall === 10 || !lastCall) && !have(9)) callNumber = 9;
+        if (!callNumber && (lastCall === 9 || !lastCall) && !have(8)) callNumber = 8;
+        if (!callNumber && (lastCall === 8 || !lastCall) && !have(7)) callNumber = 7;
+        if (!callNumber && (lastCall === 7 || !lastCall) && !have(6)) callNumber = 6;
+        if (!callNumber && (lastCall === 6 || !lastCall) && !have(5)) callNumber = 5;
+        if (!callNumber && (lastCall === 5 || !lastCall) && !have(4)) callNumber = 4;
+        if (!callNumber && (lastCall === 4 || !lastCall) && !have(2)) callNumber = 2;
 
-  if (callNumber) {
-    rp({
-        method: 'POST',
-        uri: `${server}/call`,
-        body: {
-            uid,
-            callNumber
-        },
-        json: true
-    })
-        .then(function (parsedBody) {
-            console.log('call', parsedBody);
+        if (callNumber) {
+            rp({
+                method: 'POST',
+                uri: `${server}/call`,
+                body: {
+                    uid,
+                    callNumber
+                },
+                json: true
+            })
+                .then(function (parsedBody) {
+                    console.log('call', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
-                join();
-                return;
-            }
+                    if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+                        join();
+                        return;
+                    }
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
-                seed();
-            } else {
-                setTimeout(calling, 1000);
-            }
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-  } else {
-    skip();
-  }
+                    if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+                        seed();
+                    } else {
+                        setTimeout(calling, 1000);
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        } else {
+            skip();
+        }
+    }, 15000);
+
+
 };
 
 const calling = () => {
@@ -253,7 +257,7 @@ join();
 
 
 /*
-for i in {1..5} ;
+for i in {1..4} ;
 do
     ( node bot/index.js & )
 done

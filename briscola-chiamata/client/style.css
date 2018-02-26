@@ -27,3 +27,15 @@ body {
     background-color: aquamarine;
 }
 
+#opponents {
+    border: black 1px solid;
+}
+
+#calling {
+    border: black 1px solid;
+}
+
+#my-cards {
+    border: black 1px solid;
+}
+
