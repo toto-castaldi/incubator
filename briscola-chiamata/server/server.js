@@ -28,7 +28,7 @@ app.use(function(req, res, next) {
 
 app.use((req, res, next) => {
 
-    console.log(req.url);
+    //console.log(req.url);
 
     if (req.url.startsWith(apiPrefix)) {
         let p = undefined;

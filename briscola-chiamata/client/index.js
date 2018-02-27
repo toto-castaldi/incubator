@@ -2,6 +2,16 @@
 
     const apiPath = '/api';
     let userState = {};
+    let lastCaller;
+    let lastCall;
+
+    const updateClassCalling = (uid) => {
+        if (lastCaller !== uid) {
+            lastCaller = uid;
+            removeClasses($(`.opponent`), `calling`);
+            $(`.opponent.opponent-${lastCaller}`).addClass(`calling`);
+        }
+    };
 
     const f = (method, path, body) => {
         if (!body) body = {};
@@ -57,7 +67,7 @@
                 console.log('/call',response);
                 userState = response.userState;
 
-                setTimeout(calling, 200);
+                setTimeout(calling, 2000);
 
 
             })
@@ -80,7 +90,7 @@
                         if (userState.you) {
                             console.log('PLAYYYYYYYYYY');
                         } else {
-                            setTimeout(playing, 200);
+                            setTimeout(playing, 2000);
                         }
                         break;
                     }
@@ -129,10 +139,12 @@
                                 skip();
                             }
                         } else {
-                            removeClasses($(`.opponent`), `calling`);
-                            $(`#opponent-${userState.opponentCalling.uid}`).addClass(`calling`);
-                            $(`#calling .card-number`)[0].innerHTML=userState.lastCall;
-                            setTimeout(calling, 200);
+                            updateClassCalling(userState.opponentCalling.uid);
+                            if (userState.lastCall && lastCall != userState.lastCall) {
+                                lastCall = userState.lastCall;
+                                $(`#calling .card-number`)[0].innerHTML = userState.lastCall;
+                            }
+                            setTimeout(calling, 2000);
                         }
                         break;
                     }
@@ -147,9 +159,8 @@
                                 seed(seedToCall);
                             }
                         } else {
-                            removeClasses($(`.opponent`), `calling`);
-                            $(`#opponent-${userState.opponentCalling.uid}`).addClass(`calling`);
-                            setTimeout(calling, 200);
+                            updateClassCalling(userState.opponentCalling.uid);
+                            setTimeout(calling, 2000);
                         }
                         break;
                     }
@@ -176,6 +187,7 @@
                 if (userState.opponents) {
                     userState.opponents.forEach((item, index) => {
                         $(`#opponent-${index} .opponent-uid`)[0].innerHTML=item.uid;
+                        $(`#opponent-${index}`).addClass(`opponent-${item.uid}`);
                     });
                 }
 
