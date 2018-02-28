@@ -33,6 +33,7 @@ body {
 
 #calling {
     border: black 1px solid;
+    min-height: 10%;
 }
 
 #my-cards {

@@ -4,6 +4,7 @@ const sharedConstant  = require('../shared/shared.js').constant;
 let uid ;
 let cards;
 const server = 'http://localhost:3000/api';
+let callDelay = 15000;
 
 const have = (number) => {
     return cards.find((c) => c.number === number);
@@ -166,7 +167,7 @@ const call = (lastCall) => {
         } else {
             skip();
         }
-    }, 15000);
+    }, callDelay);
 
 
 };
@@ -253,12 +254,18 @@ const join = () => {
 
 };
 
+const callDelayParam = process.argv.filter((arg) => arg.toLowerCase().startsWith('call-delay='));
+if (callDelayParam.length >= 1) {
+    callDelay = callDelayParam[0].substring('call-delay='.length);
+    console.log(`callDelay : ${callDelay}`);
+}
+
 join();
 
 
 /*
 for i in {1..4} ;
 do
-    ( node bot/index.js & )
+    ( node bot/index.js call-delay=1000 & )
 done
 */

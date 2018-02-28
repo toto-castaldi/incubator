@@ -6,11 +6,11 @@ router.post('/calling', (req, res) => {
     const player = req.player;
 
     const you = match.isPlayerCalling(player) || match.isPlayerCallingSeed(player);
-    const opponentCalling = match.callerPlayer(player);
+    const opponentCalling = match.callerPlayer();
     const lastCall = match.lastCall();
     const mathState = matchState(match);
 
-    console.log('/calling', player.uid, mathState, you, lastCall, opponentCalling);
+    //console.log('/calling', player.uid, mathState, you, lastCall, opponentCalling ? opponentCalling.uid : undefined);
 
     res.json({uid : player.uid, userState: {match: mathState, you , lastCall, opponentCalling }});
 

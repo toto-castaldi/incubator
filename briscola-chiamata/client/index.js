@@ -41,9 +41,14 @@
     };
 
     const removeClasses = (elements, including) => {
-      (elements.attr('class') || '').split(' ').forEach(clz => {
-          if (clz.includes(including)) elements.removeClass(clz.trim());
-      });
+        //jquery iteration
+        elements.each((index, elem) => {
+            const element = $(elem);
+            (element.attr('class') || '').split(' ').forEach(clz => {
+                if (clz.includes(including)) element.removeClass(clz.trim());
+            });
+        });
+
     };
 
     const skip = () => {
@@ -112,6 +117,8 @@
                 console.log('/seed',response);
                 userState = response.userState;
 
+                $(`#calling .card-seed`)[0].innerHTML = seed;
+
                 playing();
 
 
@@ -128,24 +135,31 @@
                 console.log('/calling',response);
                 userState = response.userState;
 
+                if (userState && userState.lastCall) $(`#calling .card-number`)[0].innerHTML = userState.lastCall;
+                if (userState && userState.opponentCalling && userState.opponentCalling.uid) updateClassCalling(userState.opponentCalling.uid);
+                if (userState && userState.you) updateClassCalling(response.uid);
+
 
                 switch (userState.match) {
                     case sharedObj.constant.MATCH.CALLING : {
+
                         if (userState.you) {
-                            const numberToCall = window.prompt('call','');
-                            if (numberToCall.length > 0) {
-                                call(numberToCall);
-                            } else {
-                                skip();
-                            }
+                            setTimeout(() => {
+                                const numberToCall = window.prompt('call','');
+                                if (numberToCall && numberToCall.length > 0) {
+                                    call(numberToCall);
+                                } else {
+                                    skip();
+                                }
+                            },100);
                         } else {
-                            updateClassCalling(userState.opponentCalling.uid);
                             if (userState.lastCall && lastCall != userState.lastCall) {
                                 lastCall = userState.lastCall;
-                                $(`#calling .card-number`)[0].innerHTML = userState.lastCall;
+
                             }
                             setTimeout(calling, 2000);
                         }
+
                         break;
                     }
                     case sharedObj.constant.MATCH.GIVING_CARDS: {
@@ -154,12 +168,13 @@
                     }
                     case sharedObj.constant.MATCH.CALLING_SEED: {
                         if (userState.you) {
-                            const seedToCall = window.prompt('seed','');
-                            if (sharedObj.validSeed(seedToCall)) {
-                                seed(seedToCall);
-                            }
+                            setTimeout(() => {
+                                const seedToCall = window.prompt('seed','');
+                                if (sharedObj.validSeed(seedToCall)) {
+                                    seed(seedToCall);
+                                }
+                            }, 100);
                         } else {
-                            updateClassCalling(userState.opponentCalling.uid);
                             setTimeout(calling, 2000);
                         }
                         break;

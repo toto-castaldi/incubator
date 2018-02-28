@@ -5,7 +5,7 @@ const matchState        = require('./api-router.js').matchState;
 router.post('/skip', (req, res) => {
     const player = req.player;
 
-    console.log('/skip', player);
+    console.log('/skip', player.uid);
 
     const isPlayerCalling = match.isPlayerCalling(player);
 

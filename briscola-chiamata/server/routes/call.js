@@ -6,15 +6,15 @@ router.post('/call', (req, res) => {
     const player = req.player;
     const callNumber = req.body.callNumber;
 
-    console.log('/call', player, callNumber);
+    console.log('/call', player.uid, callNumber);
 
     const isPlayerCalling = match.isPlayerCalling(player);
 
     if (isPlayerCalling) {
-      match.call(player, callNumber);
+      const callValid = match.call(player, callNumber);
       const lastCall = match.lastCall();
 
-      res.json({uid : player.uid, userState: {match: matchState(match), lastCall}});
+      res.json({uid : player.uid, userState: {match: matchState(match), lastCall, callValid}});
     } else {
       res.json({uid : player.uid, userState: {match: matchState(match)}});
     }

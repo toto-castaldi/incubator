@@ -88,12 +88,17 @@ class Match {
 
     validCall(callingNumber) {
         if (!this.callNumber) return true;
-      if (this.callNumber === 1 && callingNumber > 1) return true;
-      if (this.callNumber === 3 && callingNumber !== 1) return true;
-      return callingNumber < this.callNumber;
+        if (callingNumber === 1 && this.callNumber) return false;
+
+        if (callingNumber === 3 && this.callNumber === 1) return true;
+        if (callingNumber === 3 && this.callNumber > 3) return false;
+
+        if (callingNumber === 10 && (this.callNumber === 1 || this.callNumber === 3)) return true;
+        return callingNumber < this.callNumber;
     }
 
     rotateCall() {
+        //console.log(this.outOfCall);
         if (this.outOfCall.length === 4) {
             this.players.forEach(p => {
                 const isOneOfSkipped = this.outOfCall.find(pl => sharedEqualities.player(pl, p));
@@ -115,7 +120,9 @@ class Match {
             if (this.outOfCall.length === 0) {
                 inc();
             } else {
+                inc();
                 while (this.outOfCall.find(p => sharedEqualities.player(p, this.players[this.callerPlayerIndex]))) {
+                    //console.log(this.callerPlayerIndex);
                     inc();
                 }
             }
@@ -140,6 +147,7 @@ class Match {
       } else {
           console.log('player can\' call now', player.uid);
       }
+      return false;
     }
 
     skip(player) {
