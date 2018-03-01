@@ -1,6 +1,3 @@
-/.idea/
-*.iml
-/target/
-/lib
-/build/
-/.gradle/
+node_modules
+.idea
+package-lock.json
