@@ -12,7 +12,7 @@ router.post('/calling', (req, res) => {
 
     //console.log('/calling', player.uid, mathState, you, lastCall, opponentCalling ? opponentCalling.uid : undefined);
 
-    res.json({uid : player.uid, userState: {match: mathState, you , lastCall, opponentCalling }});
+    res.json({match: mathState, you , lastCall, opponentCalling});
 
 });
 

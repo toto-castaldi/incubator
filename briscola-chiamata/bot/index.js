@@ -23,7 +23,7 @@ const seed = () => {
         .then(function (parsedBody) {
             console.log('seed', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
@@ -51,12 +51,12 @@ const play = () => {
         .then(function (parsedBody) {
             console.log('play', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
 
-            cards = parsedBody.userState.cards;
+            cards = parsedBody.cards;
 
             playing();
         })
@@ -78,12 +78,12 @@ const playing = () => {
         .then(function (parsedBody) {
             //console.log(parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.PLAYING && parsedBody.userState.you) {
+            if (parsedBody.match === sharedConstant.MATCH.PLAYING && parsedBody.you) {
                 play();
             } else {
                 setTimeout(playing, 1000);
@@ -107,11 +107,11 @@ const skip = () => {
         .then(function (parsedBody) {
             console.log('skip', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
-            if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+            if (parsedBody.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.you) {
                 seed();
             } else {
                 playing();
@@ -150,12 +150,12 @@ const call = (lastCall) => {
                 .then(function (parsedBody) {
                     console.log('call', parsedBody);
 
-                    if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+                    if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                         join();
                         return;
                     }
 
-                    if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+                    if (parsedBody.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.you) {
                         seed();
                     } else {
                         setTimeout(calling, 1000);
@@ -184,16 +184,16 @@ const calling = () => {
         .then(function (parsedBody) {
             console.log('calling', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.CALLING && parsedBody.userState.you) {
-                call(parsedBody.userState.lastCall);
-            } else if (parsedBody.userState.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.userState.you) {
+            if (parsedBody.match === sharedConstant.MATCH.CALLING && parsedBody.you) {
+                call(parsedBody.lastCall);
+            } else if (parsedBody.match === sharedConstant.MATCH.CALLING_SEED && parsedBody.you) {
                 seed();
-            } else if (parsedBody.userState.match === sharedConstant.MATCH.PLAYING) {
+            } else if (parsedBody.match === sharedConstant.MATCH.PLAYING) {
                 playing();
             } else {
                 setTimeout(calling, 1000);
@@ -217,11 +217,11 @@ const requestCard = () => {
         .then(function (parsedBody) {
             console.log('give-me-cards', parsedBody);
 
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
                 join();
                 return;
             }
-            cards = parsedBody.userState.cards;
+            cards = parsedBody.cards;
             calling();
         })
         .catch(function (err) {
@@ -241,10 +241,10 @@ const join = () => {
         .then(function (parsedBody) {
             console.log(parsedBody);
             uid = parsedBody.uid;
-            if (parsedBody.userState.match === sharedConstant.MATCH.WAITING) {
+            if (parsedBody.match === sharedConstant.MATCH.WAITING) {
               setTimeout(join, 1000);
             }
-            if (parsedBody.userState.match === sharedConstant.MATCH.GIVING_CARDS) {
+            if (parsedBody.match === sharedConstant.MATCH.GIVING_CARDS) {
               requestCard();
             }
         })

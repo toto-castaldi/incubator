@@ -1,0 +1,25 @@
+Full Stack developer (RAL 27k to 45k EUR)
+
+You will be part of our talented team of developers on some challenging projects and customers.
+This is a position that will use current and modern development technologies so coding skills matter (front-end, back-end core services, build & packaging, continuous integration, etc.).
+Developing software at the best is at the very core of our company.
+This means that developers who integrate with our team are people who:
+- code because they love coding
+- you don’t just code because you are too young to be a project manager!
+- commit to the full development cycle (design + coding + test + packaging + delivery)
+- care about doing things the right way
+- we sell support and maintenance so quality really matters
+- like communicating about what we do: blog posts, conferences (both internals and externals), etc
+
+Our technical stack (this is what we have now, this is not we the required skills list neither the skills we will have tomorrow):
+
+- Java/J2EE
+- JavaScript/HTML5 for the client side: ES6, AngularJS, React.js, Polymer, Meteor.js, Node.js, etc
+- Linux C/C++ for native
+- Python for scripting, internal tools and server side
+- Scala
+- Mobile : ObjectiveC/Swift for iOS, Java for Android, Apache Cordova for hybrid apps
+- REST as everywhere
+- Cloud infrastructures like AWS and Azure
+- Postgresql, Oracle, Mysql, etc
+- Nosql : Redis for in memory storage, MongoDB

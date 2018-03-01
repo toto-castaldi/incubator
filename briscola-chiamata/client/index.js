@@ -1,9 +1,9 @@
 (() => {
 
     const apiPath = '/api';
-    let userState = {};
     let lastCaller;
-    let lastCall;
+    let lastPlayer;
+    let uid;
 
     const updateClassCalling = (uid) => {
         if (lastCaller !== uid) {
@@ -11,6 +11,22 @@
             removeClasses($(`.opponent`), `calling`);
             $(`.opponent.opponent-${lastCaller}`).addClass(`calling`);
         }
+    };
+
+    const updateClassPlaying = (uid) => {
+      if (lastPlayer !== uid) {
+        lastPlayer = uid;
+        removeClasses($(`.opponent`), `playing`);
+        $(`.opponent.opponent-${lastPlayer}`).addClass(`playing`);
+      }
+    };
+
+    const updateHand = (hand) => {
+      hand.forEach(({card, player}) => {
+        $(`.opponent.opponent-${player.uid} .hand .card-seed`)[0].innerHTML = card.seed;
+        $(`.opponent.opponent-${player.uid} .hand .card-number`)[0].innerHTML = card.number;
+        //$(`.opponent.opponent-${player.uid}`)
+      });
     };
 
     const f = (method, path, body) => {
@@ -32,10 +48,10 @@
         return fetch(`${apiPath}${path}`, options);
     };
 
-    const updateView = () => {
+    const updateView = (userState) => {
         const matchEl = $('#match');
         removeClasses(matchEl, `state-`);
-        if (userState.match) {
+        if (userState && userState.match) {
             matchEl.addClass('state-' + userState.match.toLowerCase());
         }
     };
@@ -56,7 +72,6 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/skip',response);
-                userState = response.userState;
             })
             .catch(error => console.error('Error:', error));
 
@@ -69,8 +84,9 @@
         })
             .then(res => res.json())
             .then(response => {
-                console.log('/call',response);
-                userState = response.userState;
+                console.log('/call',response, response.callValid);
+
+                if (response.lastCall) $(`#calling .card-number`)[0].innerHTML = response.lastCall;
 
                 setTimeout(calling, 2000);
 
@@ -88,11 +104,14 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/playing',response);
-                userState = response.userState;
 
-                switch (userState.match) {
+              if (response.playerPlaying && response.playerPlaying.uid) updateClassPlaying(response.playerPlaying.uid);
+              if (response.hand) updateHand(response.hand);
+
+
+              switch (response.match) {
                     case sharedObj.constant.MATCH.PLAYING : {
-                        if (userState.you) {
+                        if (response.you) {
                             console.log('PLAYYYYYYYYYY');
                         } else {
                             setTimeout(playing, 2000);
@@ -115,12 +134,13 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/seed',response);
-                userState = response.userState;
 
-                $(`#calling .card-seed`)[0].innerHTML = seed;
-
-                playing();
-
+                if (response.seedCallResult) {
+                  $(`#calling .card-seed`)[0].innerHTML = seed;
+                  playing();
+                } else {
+                  calling();
+                }
 
             })
             .catch(error => console.error('Error:', error));
@@ -132,31 +152,28 @@
         f('POST', `/calling` )
             .then(res => res.json())
             .then(response => {
-                console.log('/calling',response);
-                userState = response.userState;
+                console.log('/calling',response, response.lastCall);
 
-                if (userState && userState.lastCall) $(`#calling .card-number`)[0].innerHTML = userState.lastCall;
-                if (userState && userState.opponentCalling && userState.opponentCalling.uid) updateClassCalling(userState.opponentCalling.uid);
-                if (userState && userState.you) updateClassCalling(response.uid);
+                if (response.lastCall) $(`#calling .card-number`)[0].innerHTML = response.lastCall;
+                if (response.opponentCalling && response.opponentCalling.uid) updateClassCalling(response.opponentCalling.uid);
+                if (response.you) updateClassCalling(uid);
 
 
-                switch (userState.match) {
+                switch (response.match) {
                     case sharedObj.constant.MATCH.CALLING : {
 
-                        if (userState.you) {
+                        if (response.you) {
                             setTimeout(() => {
-                                const numberToCall = window.prompt('call','');
-                                if (numberToCall && numberToCall.length > 0) {
+                                const numberToCall = parseInt(window.prompt('call',''));
+                                if (numberToCall !== NaN) {
+                                  if (response.lastCall) $(`#calling .card-number`)[0].innerHTML = numberToCall;
                                     call(numberToCall);
                                 } else {
                                     skip();
                                 }
+
                             },100);
                         } else {
-                            if (userState.lastCall && lastCall != userState.lastCall) {
-                                lastCall = userState.lastCall;
-
-                            }
                             setTimeout(calling, 2000);
                         }
 
@@ -167,12 +184,9 @@
                         break;
                     }
                     case sharedObj.constant.MATCH.CALLING_SEED: {
-                        if (userState.you) {
+                        if (response.you) {
                             setTimeout(() => {
-                                const seedToCall = window.prompt('seed','');
-                                if (sharedObj.validSeed(seedToCall)) {
-                                    seed(seedToCall);
-                                }
+                              seed(window.prompt('seed',''));
                             }, 100);
                         } else {
                             setTimeout(calling, 2000);
@@ -197,10 +211,9 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/opponents',response);
-                userState = response.userState;
 
-                if (userState.opponents) {
-                    userState.opponents.forEach((item, index) => {
+                if (response.opponents) {
+                  response.opponents.forEach((item, index) => {
                         $(`#opponent-${index} .opponent-uid`)[0].innerHTML=item.uid;
                         $(`#opponent-${index}`).addClass(`opponent-${item.uid}`);
                     });
@@ -218,10 +231,9 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/give-me-cards',response);
-                userState = response.userState;
 
-                if (userState.cards) {
-                    userState.cards.forEach((item, index) => {
+                if (response.cards) {
+                  response.cards.forEach((item, index) => {
                         $(`#card-${index} .card-seed`)[0].innerHTML=item.seed;
                         $(`#card-${index} .card-number`)[0].innerHTML=item.number;
                     });
@@ -239,10 +251,10 @@
             .then(res => res.json())
             .then(response => {
                 console.log('/join-match', response);
-                userState = response.userState;
-                updateView();
+                uid = response.uid;
+                updateView(response);
 
-                switch (userState.match) {
+                switch (response.match) {
                     case sharedObj.constant.MATCH.WAITING : {
                         setTimeout(joinMatch, 5000);
                         break;

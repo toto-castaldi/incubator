@@ -9,7 +9,7 @@ router.post('/give-me-cards', (req, res) => {
 
     match.giveCards(player);
 
-    res.json({uid : player.uid, userState: {match: matchState(match), cards : player.cards}});
+    res.json({match: matchState(match), cards : player.cards});
 
 });
 

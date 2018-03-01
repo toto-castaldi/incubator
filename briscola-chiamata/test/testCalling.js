@@ -137,7 +137,10 @@ const test = () => {
         assert.isFalse(match.call(p1, 1));
     });
 
-
+  init(({match, p0,  p1, p2, p3, p4}) => {
+    match.call(p0, 8);
+    assert.isFalse(match.call(p1, 1));
+  });
 
 
 };

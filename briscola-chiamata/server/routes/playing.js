@@ -7,13 +7,11 @@ router.post('/playing', (req, res) => {
 
     //console.log('/playing', player.uid);
 
-    const isPlayerPlaying = match.isPlayerPlaying(player);
+    const you = match.isPlayerPlaying(player);
+    const playerPlaying = match.playerPlaying();
+    const hand = match.hand;
 
-    if (isPlayerPlaying !== undefined) {
-      res.json({uid : player.uid, userState: {match: matchState(match), you : isPlayerPlaying}});
-    } else {
-      res.json({uid : player.uid, userState: {match: matchState(match)}});
-    }
+    res.json({match: matchState(match), you, playerPlaying, hand});
 
 });
 

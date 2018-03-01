@@ -7,7 +7,7 @@ router.get('/opponents', (req, res) => {
 
     const opponents = match.opponentsOf(player);
 
-    res.json({uid : player.uid, userState: {match: matchState(match), opponents}});
+    res.json({match: matchState(match), opponents});
 
 });
 

@@ -87,8 +87,8 @@ class Match {
     }
 
     validCall(callingNumber) {
-        if (!this.callNumber) return true;
-        if (callingNumber === 1 && this.callNumber) return false;
+        if (this.callNumber === undefined) return true;
+        if (callingNumber === 1 && this.callNumber !== undefined) return false;
 
         if (callingNumber === 3 && this.callNumber === 1) return true;
         if (callingNumber === 3 && this.callNumber > 3) return false;
@@ -186,8 +186,14 @@ class Match {
 
     isPlayerPlaying(player) {
         if (this.isPlaying()) {
-            return player.uid === this.players[this.playingPlayerIndex].uid;
+            return sharedEqualities.player(player, this.players[this.playingPlayerIndex]);
         }
+    }
+
+    playerPlaying() {
+      if (this.isPlaying()) {
+        return this.players[this.playingPlayerIndex];
+      }
     }
 
     winnedCards(player) {

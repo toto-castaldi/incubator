@@ -12,9 +12,9 @@ router.post('/play', (req, res) => {
 
 
     if (playerAfterPlay) {
-        res.json({uid : player.uid, userState: {match: matchState(match), cards : playerAfterPlay.cards}});
+        res.json({match: matchState(match), cards : playerAfterPlay.cards});
     } else {
-        res.json({uid : player.uid, userState: {match: matchState(match)}});
+        res.json({match: matchState(match)});
     }
 
 

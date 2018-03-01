@@ -13,7 +13,7 @@ router.post('/skip', (req, res) => {
         match.skip(player);
     }
 
-    res.json({uid : player.uid, userState: {match: matchState(match), you : match.isPlayerCallingSeed(player)}});
+    res.json({match: matchState(match), you : match.isPlayerCallingSeed(player)});
 
 });
 

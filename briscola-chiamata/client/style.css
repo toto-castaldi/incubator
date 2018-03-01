@@ -27,6 +27,10 @@ body {
     background-color: aquamarine;
 }
 
+.playing {
+    border-bottom: red 2px solid;
+}
+
 #opponents {
     border: black 1px solid;
 }
@@ -40,3 +44,6 @@ body {
     border: black 1px solid;
 }
 
+.opponent .hand {
+    padding-left: 20px;
+}

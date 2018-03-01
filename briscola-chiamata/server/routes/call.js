@@ -14,9 +14,9 @@ router.post('/call', (req, res) => {
       const callValid = match.call(player, callNumber);
       const lastCall = match.lastCall();
 
-      res.json({uid : player.uid, userState: {match: matchState(match), lastCall, callValid}});
+      res.json({match: matchState(match), lastCall, callValid});
     } else {
-      res.json({uid : player.uid, userState: {match: matchState(match)}});
+      res.json({match: matchState(match)});
     }
 
 });
