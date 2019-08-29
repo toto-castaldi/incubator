@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tic-tac-toe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+
+        const canvasX = 800;
+        const canvasY = 800;
+        const lineDepth = 1;
+        const match = [
+            ['1', '2', '3'],
+            ['4', '5', '6'],
+            ['7', '8', '9']
+        ];
+        let textSizeValue;
+        let player = '0';
+
+        setup = () => {
+            textSizeValue = min([canvasX / 3, canvasY / 3]);
+
+            createCanvas(canvasX, canvasY);
+            background(51);
+            textSize(textSizeValue);
+        }
+
+        draw = () => {
+            //grid
+            fill(color('white'));
+            noStroke();
+            rect(canvasX / 3, 0, lineDepth, canvasY);
+            rect(canvasX / 3 * 2, 0, lineDepth, canvasY);
+            rect(0, canvasY / 3, canvasX, lineDepth);
+            rect(0, canvasY / 3 * 2, canvasX, lineDepth);
+            //fill grid
+            for (let rowIndex = 0; rowIndex < match[0].length; rowIndex ++) {
+                const row = match[rowIndex];
+                for (let columnIndex = 0; columnIndex < row.length; columnIndex ++ ) {
+                    const element = row[columnIndex];
+                    text(element, columnIndex * canvasX / 3 + textSizeValue / 4,  (rowIndex + 1) * canvasY / 3 - textSizeValue / 5);
+                }
+            }
+            
+
+
+        }
+
+    </script>
+</body>
+
+</html>
