@@ -1,9 +1,6 @@
-TIC-TAC-TOE
-===========
+CONNECTED-FOUR
+==============
 
-It is a web version of the [Tic-Tac-Toe](https://en.wikipedia.org/wiki/Tic-tac-toe) game written in [P5JS](https://p5js.org/).
-
-[Here is the online version](https://toto-castaldi.github.io/tic-tac-toe/index.html).
 
 ### Develop
 
