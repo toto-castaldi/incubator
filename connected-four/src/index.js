@@ -20,6 +20,7 @@ const sketch = (s) => {
     ];
     let columnChoosen;
     let fallingStep;
+    let lastRowFreeFallingDisc;
 
 
     let printFrameRate = ({ isVisible, posX, deltaPosY, fill }) => {
@@ -47,47 +48,101 @@ const sketch = (s) => {
     };
 
     s.keyPressed = () => {
-        if (s.keyCode >= 1 + 48 && s.keyCode <= 7 + 48) {
-            let numberKK = s.keyCode - 48 - 1;
-            if (columnChoosen !== numberKK) {
-                columnChoosen = numberKK;
+        if (matchState === STATE_PLAYING) {
+            if (s.keyCode >= 1 + 48 && s.keyCode <= 7 + 48) {
+                let numberKK = s.keyCode - 48 - 1;
+                if (columnChoosen !== numberKK) {
+                    columnChoosen = numberKK;
+                }
             }
         }
     }
 
-    let isColumnAvailable = (columnChoosen) => grid[0][columnChoosen] === ''
+    let lastRowFree = (columnChoosen) => {
+        let row = 0;
+        while (row < grid.length && grid[row][columnChoosen] === '') row++;
+        return row - 1;
+    }
+
+    let isColumnAvailable = (columnChoosen) => grid[0][columnChoosen] === '';
+
+    let rowToHeight = (r) => r * 80 + 40;
+
+    let printGrid = () => {
+        for (let r = 0; r < grid.length; r++) {
+            for (let c = 0; c < grid[r].length; c++) {
+                if (grid[r][c] !== '') printDisc(c, rowToHeight(r), grid[r][c]);
+            }
+        }
+
+        s.image(backgroundImage, 0, 0);
+    }
+
+    let printDisc = (c, y, player) => {
+        if (player === PLAYER_BLUE) s.fill(0, 0, 255);
+        if (player === PLAYER_RED) s.fill(255, 0, 0);
+        s.noStroke();
+        s.circle(c * 90 + 50, y, 65);
+
+    }
+
+    let printPlayerInfo = () => {
+        s.fill(0);
+        s.textSize(10);
+        s.noStroke();
+        s.text('PLAYER ' + (player === PLAYER_BLUE ? 'BLUE' : 'RED'), s.width - 100, s.height - 10);
+    }
 
     s.draw = () => {
         //reset
         s.background(255);
-        
+
 
         if (matchState === STATE_PLAYING) {
             //info
-            s.fill(0);
-            s.textSize(10);
-            s.noStroke();
-            s.text('PLAYER ' + (player === PLAYER_BLUE ? 'RED' : 'BLUE'), s.width - 100, s.height - 10);
+            printPlayerInfo();
 
             if (columnChoosen !== undefined) {
                 if (isColumnAvailable(columnChoosen)) {
-                    console.log(columnChoosen);
+
 
                     matchState = STATE_DISC_FALLING;
                     fallingStep = 0;
+                    lastRowFreeFallingDisc = lastRowFree(columnChoosen);
+                    console.log(columnChoosen, lastRowFreeFallingDisc);
                 }
             }
 
-            s.image(backgroundImage, 0, 0);
+            printGrid();
         } else if (matchState === STATE_DISC_FALLING) {
-            //move to fallingStep
-            if (player === PLAYER_BLUE) s.fill(0,0,255);
-            if (player === PLAYER_RED) s.fill(255,0,0);
-            s.noStroke();
-            s.circle(columnChoosen * 90 + 50, fallingStep, 65); //40
-            fallingStep += 3;
 
-            s.image(backgroundImage, 0, 0);
+            printPlayerInfo();
+
+            //move to fallingStep
+            printDisc(columnChoosen, fallingStep, player);
+
+
+            fallingStep += 5;
+
+            if (fallingStep > rowToHeight(lastRowFreeFallingDisc)) {
+                fallingStep = rowToHeight(lastRowFreeFallingDisc);
+
+                //put disc on grid
+                grid[lastRowFreeFallingDisc][columnChoosen] = player;
+
+                //change player
+                if (player === PLAYER_BLUE) {
+                    player = PLAYER_RED;
+                } else {
+                    player = PLAYER_BLUE;
+                }
+
+                matchState = STATE_PLAYING;
+                columnChoosen = undefined;
+                fallingStep = undefined;
+            }
+
+            printGrid();
         }
 
         printFrameRate({});
