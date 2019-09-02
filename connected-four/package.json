@@ -7,7 +7,8 @@
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
     "deploy": "npx gh-pages -d dist",
-    "test": "npx jest"
+    "test": "npx jest",
+    "ci": "npx jest --watchAll"
   },
   "author": "",
   "license": "GPLv3",

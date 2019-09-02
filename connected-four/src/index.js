@@ -62,6 +62,14 @@ new p5((sketch) => {
                     columnChoosen = numberKK;
                 }
             }
+        } else if (matchState === STATE_DISC_FALLING) {
+            if (sketch.keyCode >= 1 + 48 && sketch.keyCode <= 7 + 48) {
+                let numberKK = sketch.keyCode - 48 - 1;
+                if (columnChoosen === numberKK) {
+                    fallingStep = 10000;
+                }
+            }
+
         } else if (matchState === STATE_MATCH_WON) {
             if (sketch.keyCode === 82) {
                 changePlayer();
@@ -158,11 +166,8 @@ new p5((sketch) => {
                 //put disc on grid
                 grid[lastRowFreeFallingDisc][columnChoosen] = player;
 
-
-                columnChoosen = undefined;
-                fallingStep = undefined;
-
-                const mw = matchWon(grid);
+                const mw = matchWon(grid, lastRowFreeFallingDisc, columnChoosen);
+                console.log(grid, lastRowFreeFallingDisc, columnChoosen, mw);
                 if (mw) {
                     matchState = STATE_MATCH_WON;
                 } else {
@@ -170,6 +175,9 @@ new p5((sketch) => {
 
                     matchState = STATE_PLAYING;
                 }
+
+                columnChoosen = undefined;
+                fallingStep = undefined;
             }
 
         } else if (matchState === STATE_MATCH_WON) {
