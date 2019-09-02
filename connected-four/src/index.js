@@ -1,5 +1,7 @@
 import * as p5 from 'p5';
 import { matchWon } from './connectFour';
+import './style.css';
+import img from './Connect4Board.png';
 
 new p5((sketch) => {
 
@@ -46,7 +48,7 @@ new p5((sketch) => {
 
 
     sketch.preload = () => {
-        backgroundImage = sketch.loadImage('Connect4Board.png');
+        backgroundImage = sketch.loadImage(img);
     }
 
     sketch.setup = () => {
