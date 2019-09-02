@@ -1,16 +1,9 @@
 import * as p5 from 'p5';
+import { matchWon } from './connectFour';
 
-const sketch = (s) => {
+new p5((sketch) => {
 
-    let backgroundImage;
-    const infoPlayingHeight = 20;
-    const STATE_PLAYING = 'PLAYING';
-    const STATE_DISC_FALLING = 'DISC_FALLING';
-    let matchState = STATE_PLAYING;
-    const PLAYER_RED = 'PLAYER_RED';
-    const PLAYER_BLUE = 'PLAYER_BLUE';
-    let player = PLAYER_RED;
-    const grid = [
+    let startGrid = () => [
         ['', '', '', '', '', '', ''],
         ['', '', '', '', '', '', ''],
         ['', '', '', '', '', '', ''],
@@ -18,6 +11,17 @@ const sketch = (s) => {
         ['', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '']
     ];
+
+    let backgroundImage;
+    const infoPlayingHeight = 20;
+    const STATE_PLAYING = 'PLAYING';
+    const STATE_DISC_FALLING = 'DISC_FALLING';
+    const STATE_MATCH_WON = 'MATCH_WON';
+    let matchState = STATE_PLAYING;
+    const PLAYER_RED = 'PLAYER_RED';
+    const PLAYER_BLUE = 'PLAYER_BLUE';
+    let player = PLAYER_RED;
+    let grid = startGrid();
     let columnChoosen;
     let fallingStep;
     let lastRowFreeFallingDisc;
@@ -29,31 +33,40 @@ const sketch = (s) => {
         const deltaY = deltaPosY ? deltaPosY() : 10;
         const fillValue = fill ? fill() : 0;
         if (doPrintFrameRate) {
-            let fps = s.frameRate();
-            s.fill(fillValue);
-            s.textSize(10);
-            s.noStroke();
-            s.text("FPS: " + fps.toFixed(2), x, s.height - deltaY);
+            let fps = sketch.frameRate();
+            sketch.fill(fillValue);
+            sketch.textSize(10);
+            sketch.noStroke();
+            sketch.text("FPS: " + fps.toFixed(2), x, sketch.height - deltaY);
         }
     }
 
 
-    s.preload = () => {
-        backgroundImage = s.loadImage('Connect4Board.png');
+
+
+
+    sketch.preload = () => {
+        backgroundImage = sketch.loadImage('Connect4Board.png');
     }
 
-    s.setup = () => {
-        let canvas = s.createCanvas(backgroundImage.width, backgroundImage.height + infoPlayingHeight);
+    sketch.setup = () => {
+        let canvas = sketch.createCanvas(backgroundImage.width, backgroundImage.height + infoPlayingHeight);
         canvas.parent('sketch-holder');
     };
 
-    s.keyPressed = () => {
+    sketch.keyPressed = () => {
         if (matchState === STATE_PLAYING) {
-            if (s.keyCode >= 1 + 48 && s.keyCode <= 7 + 48) {
-                let numberKK = s.keyCode - 48 - 1;
+            if (sketch.keyCode >= 1 + 48 && sketch.keyCode <= 7 + 48) {
+                let numberKK = sketch.keyCode - 48 - 1;
                 if (columnChoosen !== numberKK) {
                     columnChoosen = numberKK;
                 }
+            }
+        } else if (matchState === STATE_MATCH_WON) {
+            if (sketch.keyCode === 82) {
+                changePlayer();
+                grid = startGrid();
+                matchState = STATE_PLAYING;
             }
         }
     }
@@ -75,27 +88,43 @@ const sketch = (s) => {
             }
         }
 
-        s.image(backgroundImage, 0, 0);
+        sketch.image(backgroundImage, 0, 0);
     }
 
     let printDisc = (c, y, player) => {
-        if (player === PLAYER_BLUE) s.fill(0, 0, 255);
-        if (player === PLAYER_RED) s.fill(255, 0, 0);
-        s.noStroke();
-        s.circle(c * 90 + 50, y, 65);
+        if (player === PLAYER_BLUE) sketch.fill(0, 0, 255);
+        if (player === PLAYER_RED) sketch.fill(255, 0, 0);
+        sketch.noStroke();
+        sketch.circle(c * 90 + 50, y, 65);
 
     }
 
     let printPlayerInfo = () => {
-        s.fill(0);
-        s.textSize(10);
-        s.noStroke();
-        s.text('PLAYER ' + (player === PLAYER_BLUE ? 'BLUE' : 'RED'), s.width - 100, s.height - 10);
+        sketch.fill(0);
+        sketch.textSize(10);
+        sketch.noStroke();
+        sketch.text('PLAYER ' + (player === PLAYER_BLUE ? 'BLUE' : 'RED'), sketch.width - 100, sketch.height - 10);
     }
 
-    s.draw = () => {
+    let printWonInfo = () => {
+        sketch.fill(0);
+        sketch.textSize(10);
+        sketch.noStroke();
+        sketch.text('PLAYER ' + (player === PLAYER_BLUE ? 'BLUE' : 'RED') + ' WINS. Press "R" to Restart', sketch.width - 200, sketch.height - 10);
+    }
+
+    let changePlayer = () => {
+        //change player
+        if (player === PLAYER_BLUE) {
+            player = PLAYER_RED;
+        } else {
+            player = PLAYER_BLUE;
+        }
+    }
+
+    sketch.draw = () => {
         //reset
-        s.background(255);
+        sketch.background(255);
 
 
         if (matchState === STATE_PLAYING) {
@@ -109,11 +138,10 @@ const sketch = (s) => {
                     matchState = STATE_DISC_FALLING;
                     fallingStep = 0;
                     lastRowFreeFallingDisc = lastRowFree(columnChoosen);
-                    console.log(columnChoosen, lastRowFreeFallingDisc);
+                    //console.log(columnChoosen, lastRowFreeFallingDisc);
                 }
             }
 
-            printGrid();
         } else if (matchState === STATE_DISC_FALLING) {
 
             printPlayerInfo();
@@ -130,25 +158,27 @@ const sketch = (s) => {
                 //put disc on grid
                 grid[lastRowFreeFallingDisc][columnChoosen] = player;
 
-                //change player
-                if (player === PLAYER_BLUE) {
-                    player = PLAYER_RED;
-                } else {
-                    player = PLAYER_BLUE;
-                }
 
-                matchState = STATE_PLAYING;
                 columnChoosen = undefined;
                 fallingStep = undefined;
+
+                const mw = matchWon(grid);
+                if (mw) {
+                    matchState = STATE_MATCH_WON;
+                } else {
+                    changePlayer();
+
+                    matchState = STATE_PLAYING;
+                }
             }
 
-            printGrid();
+        } else if (matchState === STATE_MATCH_WON) {
+            printWonInfo();
         }
+
+        printGrid();
 
         printFrameRate({});
     };
-}
-
-let canvas = new p5(sketch);
-
+});
 
