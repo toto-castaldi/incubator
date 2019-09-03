@@ -25,6 +25,7 @@ class ConnectFour {
         if (row !== undefined) {
             this.grid[row][columnChoosen] = player;
         }
+        return row;
     }
 
     onGrid(f) {
@@ -36,6 +37,7 @@ class ConnectFour {
     }
 
     matchWon(lastPlayedRow, lastPlayedColumn) {
+        if (this.grid[lastPlayedRow][lastPlayedColumn] === '') return undefined;
         //check column
         if (lastPlayedRow <= 2) {
             if (this.grid[lastPlayedRow][lastPlayedColumn] === this.grid[lastPlayedRow + 1][lastPlayedColumn] &&
@@ -43,24 +45,22 @@ class ConnectFour {
                 this.grid[lastPlayedRow + 2][lastPlayedColumn] === this.grid[lastPlayedRow + 3][lastPlayedColumn]
             ) return this.grid[lastPlayedRow][lastPlayedColumn];
         }
-        let winning = undefined;
+        
         //check row
-        //TODO use even lastPlayedColumn
         let row = this.grid[lastPlayedRow];
-        let count = 0;
-        let lastPlayed = row[0];
-        row.forEach((cell) => {
-            if (cell === '') {
-                count = 0;
-            } else if (cell === lastPlayed) {
-                count++;
-            } else {
-                count = 1;
-            }
-            lastPlayed = cell;
-            if (count === 4 && winning === undefined) return winning = cell;
-        });
-        return winning;
+        let winning = row[lastPlayedColumn];
+        let count = 1;
+        let columnR = lastPlayedColumn + 1;
+        while (columnR < row.length && row[columnR] === winning) {
+            if (row[columnR] === winning) count ++;
+            columnR ++;
+        }
+        let columnL = lastPlayedColumn -1;
+        while (columnL > 0 && row[columnL] === winning) {
+            if (row[columnL] === winning) count ++;
+            columnL -= 1;
+        }
+        if (count >= 4) return winning;
     }
 
 }

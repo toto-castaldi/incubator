@@ -1,7 +1,6 @@
 import { ConnectFour } from './connectFour';
 
 test('vertical red', () => {
-  console.log(ConnectFour);
   let connectFour = new ConnectFour();
   connectFour.play(0, 'R');
   connectFour.play(1, 'B');
@@ -27,16 +26,15 @@ test('missing one to vertical red', () => {
 });
 
 test('horizontal blue', () => {
-  console.log(ConnectFour);
   let connectFour = new ConnectFour();
   connectFour.play(0, 'R');
   connectFour.play(1, 'B');
   connectFour.play(2, 'B');
   connectFour.play(3, 'B');
-  connectFour.play(4, 'B');
   connectFour.play(5, 'R');
+  connectFour.play(4, 'B');
 
-  expect(connectFour.matchWon(5, 0)).toBe('B');
+  expect(connectFour.matchWon(5, 4)).toBe('B');
 });
 
 test('missing one to horizontal blue', () => {
@@ -45,8 +43,22 @@ test('missing one to horizontal blue', () => {
   connectFour.play(0, 'R');
   connectFour.play(1, 'B');
   connectFour.play(2, 'B');
-  connectFour.play(3, 'B');
   connectFour.play(4, 'R');
+  connectFour.play(3, 'B');
 
-  expect(connectFour.matchWon(5, 0)).toBe(undefined);
+  expect(connectFour.matchWon(5, 3)).toBe(undefined);
+});
+
+test('horizontal blue', () => {
+  let connectFour = new ConnectFour();
+  connectFour.play(0, 'R');
+  connectFour.play(1, 'B');
+  connectFour.play(6, 'R');
+  connectFour.play(2, 'B');
+  connectFour.play(0, 'R');
+  connectFour.play(4, 'B');
+  connectFour.play(0, 'R');
+  connectFour.play(3, 'B');
+
+  expect(connectFour.matchWon(5, 3)).toBe('B');
 });
