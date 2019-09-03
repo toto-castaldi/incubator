@@ -1,18 +1,9 @@
 import * as p5 from 'p5';
-import { matchWon } from './connectFour';
+import { ConnectFour } from './connectFour';
 import './style.css';
 import img from './Connect4Board.png';
 
 new p5((sketch) => {
-
-    let startGrid = () => [
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '']
-    ];
 
     let backgroundImage;
     const infoPlayingHeight = 20;
@@ -23,7 +14,7 @@ new p5((sketch) => {
     const PLAYER_RED = 'PLAYER_RED';
     const PLAYER_BLUE = 'PLAYER_BLUE';
     let player = PLAYER_RED;
-    let grid = startGrid();
+    let connectFour = new ConnectFour();
     let columnChoosen;
     let fallingStep;
     let lastRowFreeFallingDisc;
@@ -42,10 +33,6 @@ new p5((sketch) => {
             sketch.text("FPS: " + fps.toFixed(2), x, sketch.height - deltaY);
         }
     }
-
-
-
-
 
     sketch.preload = () => {
         backgroundImage = sketch.loadImage(img);
@@ -75,28 +62,18 @@ new p5((sketch) => {
         } else if (matchState === STATE_MATCH_WON) {
             if (sketch.keyCode === 82) {
                 changePlayer();
-                grid = startGrid();
+                connectFour = new ConnectFour();
                 matchState = STATE_PLAYING;
             }
         }
     }
 
-    let lastRowFree = (columnChoosen) => {
-        let row = 0;
-        while (row < grid.length && grid[row][columnChoosen] === '') row++;
-        return row - 1;
-    }
-
-    let isColumnAvailable = (columnChoosen) => grid[0][columnChoosen] === '';
-
     let rowToHeight = (r) => r * 80 + 40;
 
     let printGrid = () => {
-        for (let r = 0; r < grid.length; r++) {
-            for (let c = 0; c < grid[r].length; c++) {
-                if (grid[r][c] !== '') printDisc(c, rowToHeight(r), grid[r][c]);
-            }
-        }
+        connectFour.onGrid((r,c, cell) => {
+            if (cell !== '') printDisc(c, rowToHeight(r), cell);
+        })
 
         sketch.image(backgroundImage, 0, 0);
     }
@@ -106,7 +83,6 @@ new p5((sketch) => {
         if (player === PLAYER_RED) sketch.fill(255, 0, 0);
         sketch.noStroke();
         sketch.circle(c * 90 + 50, y, 65);
-
     }
 
     let printPlayerInfo = () => {
@@ -142,12 +118,11 @@ new p5((sketch) => {
             printPlayerInfo();
 
             if (columnChoosen !== undefined) {
-                if (isColumnAvailable(columnChoosen)) {
-
+                if (connectFour.isColumnAvailable(columnChoosen)) {
 
                     matchState = STATE_DISC_FALLING;
                     fallingStep = 0;
-                    lastRowFreeFallingDisc = lastRowFree(columnChoosen);
+                    lastRowFreeFallingDisc = connectFour.lastRowFree(columnChoosen);
                     //console.log(columnChoosen, lastRowFreeFallingDisc);
                 }
             }
@@ -166,10 +141,10 @@ new p5((sketch) => {
                 fallingStep = rowToHeight(lastRowFreeFallingDisc);
 
                 //put disc on grid
-                grid[lastRowFreeFallingDisc][columnChoosen] = player;
+                connectFour.play(columnChoosen, player);
 
-                const mw = matchWon(grid, lastRowFreeFallingDisc, columnChoosen);
-                console.log(grid, lastRowFreeFallingDisc, columnChoosen, mw);
+                const mw = connectFour.matchWon(lastRowFreeFallingDisc, columnChoosen);
+                console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, mw);
                 if (mw) {
                     matchState = STATE_MATCH_WON;
                 } else {
