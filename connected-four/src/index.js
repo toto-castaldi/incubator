@@ -141,10 +141,10 @@ new p5((sketch) => {
                 fallingStep = rowToHeight(lastRowFreeFallingDisc);
 
                 //put disc on grid
-                connectFour.play(columnChoosen, player);
+                const mw = connectFour.play(columnChoosen, player);
 
-                const mw = connectFour.matchWon(lastRowFreeFallingDisc, columnChoosen);
-                console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, mw);
+                
+                console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, player, mw);
                 if (mw) {
                     matchState = STATE_MATCH_WON;
                 } else {

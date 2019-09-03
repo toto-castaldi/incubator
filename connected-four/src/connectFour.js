@@ -21,11 +21,12 @@ class ConnectFour {
     }
 
     play(columnChoosen, player) {
-        let row = this.lastRowFree(columnChoosen);
-        if (row !== undefined) {
-            this.grid[row][columnChoosen] = player;
+        let rowIndex = this.lastRowFree(columnChoosen);
+        if (rowIndex !== undefined) {
+            this.grid[rowIndex][columnChoosen] = player;
+            return this.matchWon(rowIndex, columnChoosen);
         }
-        return row;
+        return undefined;
     }
 
     onGrid(f) {
@@ -53,11 +54,13 @@ class ConnectFour {
         let columnR = lastPlayedColumn + 1;
         while (columnR < row.length && row[columnR] === winning) {
             if (row[columnR] === winning) count ++;
+            //console.log(row, winning, columnR, count);
             columnR ++;
         }
         let columnL = lastPlayedColumn -1;
-        while (columnL > 0 && row[columnL] === winning) {
+        while (columnL >= 0 && row[columnL] === winning) {
             if (row[columnL] === winning) count ++;
+            //console.log(row, winning, columnL, count);
             columnL -= 1;
         }
         if (count >= 4) return winning;
