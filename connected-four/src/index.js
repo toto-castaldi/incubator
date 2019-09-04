@@ -144,7 +144,7 @@ new p5((sketch) => {
                 const mw = connectFour.play(columnChoosen, player);
 
                 
-                console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, player, mw);
+                //console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, player, mw);
                 if (mw) {
                     matchState = STATE_MATCH_WON;
                 } else {

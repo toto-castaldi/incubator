@@ -24,7 +24,7 @@ class ConnectFour {
         let rowIndex = this.lastRowFree(columnChoosen);
         if (rowIndex !== undefined) {
             this.grid[rowIndex][columnChoosen] = player;
-            console.log(this.grid);
+            //console.log(this.grid);
             return this.matchWon(rowIndex, columnChoosen);
         }
         return undefined;
@@ -87,6 +87,25 @@ class ConnectFour {
         }
         if (count >= 4) return winning;
 
+        //check no-se diag
+        count = 1;
+        columnR = lastPlayedColumn + 1;
+        rowR = lastPlayedRow +1;
+        while (columnR < row.length && rowR < this.grid.length && this.grid[rowR][columnR] === winning) {
+            if (this.grid[rowR][columnR] === winning) count ++;
+            //console.log(row, winning, columnR, count);
+            columnR ++;
+            rowR ++;
+        }
+        columnL = lastPlayedColumn - 1;
+        rowL = lastPlayedRow - 1;
+        while (columnL >= 0 && rowL >= 0 && this.grid[rowL][columnL] === winning) {
+            if (this.grid[rowL][columnL] === winning) count ++;
+            //console.log(row, winning, columnR, count);
+            columnL --;
+            rowL --;
+        }
+        if (count >= 4) return winning;
 
     }
 
