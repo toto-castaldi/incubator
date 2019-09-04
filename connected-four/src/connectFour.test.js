@@ -63,3 +63,31 @@ test('horizontal red', () => {
   expect(connectFour.play(3, 'B')).toBe(undefined);
   expect(connectFour.play(2, 'R')).toBe('R');
 });
+
+test('diagonal so-ne red', () => {
+  let connectFour = new ConnectFour();
+  expect(connectFour.play(0, 'R')).toBe(undefined);
+  expect(connectFour.play(1, 'B')).toBe(undefined);
+  expect(connectFour.play(1, 'R')).toBe(undefined);
+  expect(connectFour.play(2, 'B')).toBe(undefined);
+  expect(connectFour.play(3, 'R')).toBe(undefined);
+  expect(connectFour.play(2, 'B')).toBe(undefined);
+  expect(connectFour.play(2, 'R')).toBe(undefined);
+  expect(connectFour.play(3, 'R')).toBe(undefined);
+  expect(connectFour.play(3, 'B')).toBe(undefined);
+  expect(connectFour.play(3, 'R')).toBe('R');
+});
+
+test('missing diagonal so-ne red', () => {
+  let connectFour = new ConnectFour();
+  expect(connectFour.play(0, 'R')).toBe(undefined);
+  expect(connectFour.play(1, 'B')).toBe(undefined);
+  expect(connectFour.play(1, 'R')).toBe(undefined);
+  expect(connectFour.play(2, 'B')).toBe(undefined);
+  expect(connectFour.play(3, 'R')).toBe(undefined);
+  expect(connectFour.play(2, 'B')).toBe(undefined);
+  expect(connectFour.play(2, 'R')).toBe(undefined);
+  expect(connectFour.play(3, 'R')).toBe(undefined);
+  expect(connectFour.play(3, 'B')).toBe(undefined);
+  expect(connectFour.play(4, 'R')).toBe(undefined);
+});

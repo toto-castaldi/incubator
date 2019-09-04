@@ -24,6 +24,7 @@ class ConnectFour {
         let rowIndex = this.lastRowFree(columnChoosen);
         if (rowIndex !== undefined) {
             this.grid[rowIndex][columnChoosen] = player;
+            console.log(this.grid);
             return this.matchWon(rowIndex, columnChoosen);
         }
         return undefined;
@@ -47,9 +48,10 @@ class ConnectFour {
             ) return this.grid[lastPlayedRow][lastPlayedColumn];
         }
         
+        let winning = this.grid[lastPlayedRow][lastPlayedColumn];
+        
         //check row
         let row = this.grid[lastPlayedRow];
-        let winning = row[lastPlayedColumn];
         let count = 1;
         let columnR = lastPlayedColumn + 1;
         while (columnR < row.length && row[columnR] === winning) {
@@ -64,6 +66,28 @@ class ConnectFour {
             columnL -= 1;
         }
         if (count >= 4) return winning;
+
+        //check so-ne diag
+        count = 1;
+        columnR = lastPlayedColumn + 1;
+        let rowR = lastPlayedRow -1;
+        while (columnR < row.length && rowR >= 0 && this.grid[rowR][columnR] === winning) {
+            if (this.grid[rowR][columnR] === winning) count ++;
+            //console.log(row, winning, columnR, count);
+            columnR ++;
+            rowR --;
+        }
+        columnL = lastPlayedColumn - 1;
+        let rowL = lastPlayedRow +1;
+        while (columnL >= 0 && rowL < this.grid.length && this.grid[rowL][columnL] === winning) {
+            if (this.grid[rowL][columnL] === winning) count ++;
+            //console.log(row, winning, columnR, count);
+            columnL --;
+            rowL ++;
+        }
+        if (count >= 4) return winning;
+
+
     }
 
 }
