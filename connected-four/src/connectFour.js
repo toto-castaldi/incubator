@@ -33,80 +33,52 @@ class ConnectFour {
     onGrid(f) {
         for (let r = 0; r < this.grid.length; r++) {
             for (let c = 0; c < this.grid[r].length; c++) {
-                f(r,c, this.grid[r][c]);
+                f(r, c, this.grid[r][c]);
             }
         }
     }
 
     matchWon(lastPlayedRow, lastPlayedColumn) {
         if (this.grid[lastPlayedRow][lastPlayedColumn] === '') return undefined;
-        //check column
-        if (lastPlayedRow <= 2) {
-            if (this.grid[lastPlayedRow][lastPlayedColumn] === this.grid[lastPlayedRow + 1][lastPlayedColumn] &&
-                this.grid[lastPlayedRow + 1][lastPlayedColumn] === this.grid[lastPlayedRow + 2][lastPlayedColumn] &&
-                this.grid[lastPlayedRow + 2][lastPlayedColumn] === this.grid[lastPlayedRow + 3][lastPlayedColumn]
-            ) return this.grid[lastPlayedRow][lastPlayedColumn];
+
+        let moveAndCount = (rowIndex, columnIndex, moveRowIndex, moveColumnIndex) => {
+            let count = 0;
+            const winning = this.grid[rowIndex][columnIndex];
+            rowIndex = moveRowIndex(rowIndex);
+            columnIndex = moveColumnIndex(columnIndex);
+            while (rowIndex >= 0 && rowIndex < this.grid.length && columnIndex >= 0 && columnIndex < this.grid[0].length && this.grid[rowIndex][columnIndex] === winning) {
+                if (this.grid[rowIndex][columnIndex] === winning) count++;
+                rowIndex = moveRowIndex(rowIndex);
+                columnIndex = moveColumnIndex(columnIndex);
+                console.log(rowIndex, columnIndex, count, winning);
+            }
+            return count;
         }
-        
-        let winning = this.grid[lastPlayedRow][lastPlayedColumn];
+
+        let backAndForwardCheck = (lastPlayedRow, lastPlayedColumn, moveRowIndexBack, moveColumnIndexBack, moveRowIndexForward, moveColumnIndexForward) => {
+            let winning = this.grid[lastPlayedRow][lastPlayedColumn];
+            let count = 1;
+            count += moveAndCount(lastPlayedRow, lastPlayedColumn, moveRowIndexBack, moveColumnIndexBack);
+            count += moveAndCount(lastPlayedRow, lastPlayedColumn, moveRowIndexForward, moveColumnIndexForward);
+            if (count >= 4) return winning;
+        }
+
+        //check column
+        let checkColumn = backAndForwardCheck(lastPlayedRow, lastPlayedColumn, (r) => r + 1, (c) => c, (r) => r - 1, (c) => c);
+        if (checkColumn) return checkColumn;
         
         //check row
-        let row = this.grid[lastPlayedRow];
-        let count = 1;
-        let columnR = lastPlayedColumn + 1;
-        while (columnR < row.length && row[columnR] === winning) {
-            if (row[columnR] === winning) count ++;
-            //console.log(row, winning, columnR, count);
-            columnR ++;
-        }
-        let columnL = lastPlayedColumn -1;
-        while (columnL >= 0 && row[columnL] === winning) {
-            if (row[columnL] === winning) count ++;
-            //console.log(row, winning, columnL, count);
-            columnL -= 1;
-        }
-        if (count >= 4) return winning;
-
+        let checkRow = backAndForwardCheck(lastPlayedRow, lastPlayedColumn, (r) => r, (c) => c + 1, (r) => r, (c) => c-1);
+        if (checkRow) return checkRow;
+        
         //check so-ne diag
-        count = 1;
-        columnR = lastPlayedColumn + 1;
-        let rowR = lastPlayedRow -1;
-        while (columnR < row.length && rowR >= 0 && this.grid[rowR][columnR] === winning) {
-            if (this.grid[rowR][columnR] === winning) count ++;
-            //console.log(row, winning, columnR, count);
-            columnR ++;
-            rowR --;
-        }
-        columnL = lastPlayedColumn - 1;
-        let rowL = lastPlayedRow +1;
-        while (columnL >= 0 && rowL < this.grid.length && this.grid[rowL][columnL] === winning) {
-            if (this.grid[rowL][columnL] === winning) count ++;
-            //console.log(row, winning, columnR, count);
-            columnL --;
-            rowL ++;
-        }
-        if (count >= 4) return winning;
+        let checkSONE = backAndForwardCheck(lastPlayedRow, lastPlayedColumn, (r) => r - 1, (c) => c + 1, (r) => r + 1, (c) => c - 1);
+        if (checkSONE) return checkSONE;
 
         //check no-se diag
-        count = 1;
-        columnR = lastPlayedColumn + 1;
-        rowR = lastPlayedRow +1;
-        while (columnR < row.length && rowR < this.grid.length && this.grid[rowR][columnR] === winning) {
-            if (this.grid[rowR][columnR] === winning) count ++;
-            //console.log(row, winning, columnR, count);
-            columnR ++;
-            rowR ++;
-        }
-        columnL = lastPlayedColumn - 1;
-        rowL = lastPlayedRow - 1;
-        while (columnL >= 0 && rowL >= 0 && this.grid[rowL][columnL] === winning) {
-            if (this.grid[rowL][columnL] === winning) count ++;
-            //console.log(row, winning, columnR, count);
-            columnL --;
-            rowL --;
-        }
-        if (count >= 4) return winning;
-
+        let checkNOSE = backAndForwardCheck(lastPlayedRow, lastPlayedColumn, (r) => r + 1, (c) => c + 1, (r) => r - 1, (c) => c - 1);
+        if (checkNOSE) return checkNOSE;
+        
     }
 
 }

@@ -15,4 +15,12 @@ It requires [NodeJS](https://nodejs.org/) (developed with v10.16.0, you can use 
     > npm run build
     > google-chrome dist/index.html
     
+### TODO
+
+* sounds
+* history of wins
+* highlits winning combination
+
+
 > Written with [StackEdit](https://stackedit.io/).
+

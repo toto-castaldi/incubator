@@ -18,6 +18,7 @@ new p5((sketch) => {
     let columnChoosen;
     let fallingStep;
     let lastRowFreeFallingDisc;
+    const COLUMN_WIDTH = 90; //it is possible to computate it from image ?
 
 
     let printFrameRate = ({ isVisible, posX, deltaPosY, fill }) => {
@@ -43,21 +44,40 @@ new p5((sketch) => {
         canvas.parent('sketch-holder');
     };
 
-    sketch.keyPressed = () => {
-        if (matchState === STATE_PLAYING) {
-            if (sketch.keyCode >= 1 + 48 && sketch.keyCode <= 7 + 48) {
-                let numberKK = sketch.keyCode - 48 - 1;
-                if (columnChoosen !== numberKK) {
-                    columnChoosen = numberKK;
+    sketch.mousePressed = () => {
+        let columnClicked = () => {
+            for (let c = 0; c < 7; c++) {
+                const widthColumn = widthColumnCenter(c);
+                if (sketch.mouseX > widthColumn - 40 && sketch.mouseX < widthColumn + 40) {
+                    return c;
                 }
+            }
+        }
+        if (matchState === STATE_PLAYING) {
+            const cc = columnClicked();
+            if (cc) {
+                columnChoosen = cc;
             }
         } else if (matchState === STATE_DISC_FALLING) {
-            if (sketch.keyCode >= 1 + 48 && sketch.keyCode <= 7 + 48) {
-                let numberKK = sketch.keyCode - 48 - 1;
-                if (columnChoosen === numberKK) {
-                    fallingStep = 10000;
-                }
+            const cc = columnClicked();
+            if (columnChoosen === cc) {
+                fallingStep = 10000;
             }
+        }
+    }
+
+    sketch.keyPressed = () => {
+        let numberKK = () => {
+            if (sketch.keyCode >= 1 + 48 && sketch.keyCode <= 7 + 48) {
+                return sketch.keyCode - 48 - 1;
+            }
+        }
+        if (matchState === STATE_PLAYING) {
+            const nkk = numberKK();
+            if (nkk !== undefined && columnChoosen !== nkk) columnChoosen = nkk;
+        } else if (matchState === STATE_DISC_FALLING) {
+            const nkk = numberKK();
+            if (nkk !== undefined && columnChoosen === nkk) fallingStep = 10000;
 
         } else if (matchState === STATE_MATCH_WON) {
             if (sketch.keyCode === 82) {
@@ -71,7 +91,7 @@ new p5((sketch) => {
     let rowToHeight = (r) => r * 80 + 40;
 
     let printGrid = () => {
-        connectFour.onGrid((r,c, cell) => {
+        connectFour.onGrid((r, c, cell) => {
             if (cell !== '') printDisc(c, rowToHeight(r), cell);
         })
 
@@ -82,8 +102,10 @@ new p5((sketch) => {
         if (player === PLAYER_BLUE) sketch.fill(0, 0, 255);
         if (player === PLAYER_RED) sketch.fill(255, 0, 0);
         sketch.noStroke();
-        sketch.circle(c * 90 + 50, y, 65);
+        sketch.circle(widthColumnCenter(c), y, 65);
     }
+
+    let widthColumnCenter = (columnIndex) => columnIndex * COLUMN_WIDTH + 50;
 
     let printPlayerInfo = () => {
         sketch.fill(0);
@@ -143,7 +165,7 @@ new p5((sketch) => {
                 //put disc on grid
                 const mw = connectFour.play(columnChoosen, player);
 
-                
+
                 //console.log(connectFour.grid, lastRowFreeFallingDisc, columnChoosen, player, mw);
                 if (mw) {
                     matchState = STATE_MATCH_WON;
