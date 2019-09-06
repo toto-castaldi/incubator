@@ -1,9 +1,9 @@
-CONNECTED-FOUR
-==============
+PURPLE RAIN
+===========
 
-It is a web version of the [Connect Four](https://en.wikipedia.org/wiki/Connect_Four) game written in [P5JS](https://p5js.org/).
+Inspired by a Coding Challenge of [Daniel Shiffman](https://shiffman.net/) 
 
-[Here is the online version](https://toto-castaldi.github.io/connect-four/index.html).
+[Here is the online version](https://toto-castaldi.github.io/purple-rain/index.html).
 
 ### Develop
 
@@ -20,11 +20,6 @@ It requires [NodeJS](https://nodejs.org/) (developed with v10.16.0, you can use 
     
 ### TODO
 
-* music
-* history of wins
-* highlits winning combination
-* enhance controls : show/hide fps, use/stop sound
-
+* sliders for customize the rain
 
 > Written with [StackEdit](https://stackedit.io/).
-

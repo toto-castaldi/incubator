@@ -1,7 +1,18 @@
 import * as p5 from 'p5';
+import * as sound from 'p5/lib/addons/p5.sound';
 import './style.css';
+import { Drop } from './drop.js';
+import rainWave from './401276__inspectorj__rain-moderate-b.wav';
 
 new p5((sketch) => {
+
+    const drops = [];
+
+    let rainSound;
+
+    sketch.preload = () => {
+        rainSound = sketch.loadSound(rainWave);
+    }
 
     let printFrameRate = ({ isVisible, posX, deltaPosY, fill }) => {
         const doPrintFrameRate = isVisible ? isVisible() : true;
@@ -18,13 +29,29 @@ new p5((sketch) => {
     }
 
     sketch.setup = () => {
-        let canvas = sketch.createCanvas(100, 100);
+        let canvas = sketch.createCanvas(window.innerWidth - 8, window.innerHeight - 8);
         canvas.parent('sketch-holder');
+
+        for (let i = 0; i < 1000; i++) {
+            drops.push(new Drop(sketch));
+        }
+
+        rainSound.loop();
     };
 
     sketch.draw = () => {
+        if (!rainSound.isPlaying()) {
+            rainSound.play();
+        }
+
         //reset
-        sketch.background(255);
+        sketch.background(sketch.color(230, 230, 250));
+
+        //show
+        drops.forEach((drop) => {
+            drop.fall();
+            drop.show();
+        });
 
         printFrameRate({});
     };
