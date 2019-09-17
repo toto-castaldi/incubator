@@ -12,10 +12,14 @@ new p5((s) => {
     let resolutionX = 40;
     let resolutionY = 40;
     let flying = 0;
+    let save = false;
 
     let terrain = [];
 
-    s.preload = () => {
+    s.keyPressed = () => {
+        if (s.keyCode === 73) { //I
+            save = true;
+        }
     }
 
     s.setup = () => {
@@ -73,6 +77,14 @@ new p5((s) => {
 
 
         fpsParagraph.html('FPS ' + s.frameRate().toFixed(2));
+
+        if (save) {
+            save = false;
+            let canvas = document.getElementsByTagName('canvas')[0];
+            canvas.toBlob(function(blob) {
+                saveAs(blob, "sketch.png");
+            });
+        }
         
 
     };
