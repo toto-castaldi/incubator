@@ -19,13 +19,24 @@ Log into the system an set (actually is already set but does not work out of the
     > //search and set IT
     > //OK
     > sudo apt-get install python3-venv pigpio
+    > sudo systemctl enable pigpiod
 ```
 
 ## Program
 
+### On Coderbot
+
 ```
-    > sudo pigpiod
     > python3 -m venv .
     > source bin/activate
     > pip3 install -r requirements.txt
+```
+
+### Locally
+
+```
+    > pyenv local 3.7.6
+    > virtualenv venv
+    > source venv/bin/activate
+    > pip install -r requirements.txt
 ```
