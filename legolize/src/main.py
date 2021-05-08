@@ -1,13 +1,8 @@
 import sys
 import utils
-import image_input
+import legolize
 
 logger = utils.init_log()
-
-def legolize(image_file_name, w, h):
-    for p in image_input.pixels(image_file_name, h, w):
-        logger.debug(p)
-
 
 def cli():
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
@@ -29,7 +24,7 @@ def cli():
         raise SystemExit(f"Usage: {sys.argv[0]} -f [image_file_name]")
 
     logger.debug(f"{image_file_name} {w} {h}")
-    legolize(image_file_name, w, h)
+    legolize.pixels(image_file_name, w, h)
 
 if __name__ == "__main__":
     cli()
