@@ -12,7 +12,13 @@ pip install -r requirements.txt
 Execute
 
 ```
-LOG_LEVEL=DEBUG python src/main.py -f photos/byke.jpeg
+LOG_LEVEL=DEBUG python src/main.py -f photos/byke.jpeg -w 50 -h 50
 ```
+
+![source](photos/byke.jpeg)
+![dest](byke-output.png)
+
+
+### Greetings
 
 [Lego Color from Rebrickable](https://rebrickable.com/downloads/)
