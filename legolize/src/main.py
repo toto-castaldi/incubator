@@ -1,6 +1,7 @@
 import sys
 import utils
 import legolize
+import image_output
 
 logger = utils.init_log()
 
@@ -24,7 +25,9 @@ def cli():
         raise SystemExit(f"Usage: {sys.argv[0]} -f [image_file_name]")
 
     logger.debug(f"{image_file_name} {w} {h}")
-    legolize.pixels(image_file_name, w, h)
+    lego_image = legolize.load(image_file_name, w, h)
+    image = image_output.create_image(lego_image)
+    image.save("output.png")
 
 if __name__ == "__main__":
     cli()
