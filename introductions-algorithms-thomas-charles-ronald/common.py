@@ -1,10 +1,8 @@
 from tkinter import *
 import time
 
-def init_gui():
-    width = 800
-    height = 600
-
+def init_gui(width = 800, height = 600):
+    
     window = Tk()
 
     window.title("Insertion sort")

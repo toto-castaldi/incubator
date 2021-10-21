@@ -27,3 +27,7 @@ pip install -r requirements.txt
 python insertion_sort.py
 
 ```
+
+# Examples
+
+![Insertion Sort](insertion_sort.gif)
