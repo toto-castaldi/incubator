@@ -32,3 +32,9 @@ python exercise_01_01_004.py
 # Examples
 
 ![Insertion Sort](insertion_sort.gif)
+
+# Sorting Algorithms time complexity
+
+| Algorithm      | Time complexity |
+| -------------- | --------------- |
+| Insertion sort | n*n             |
