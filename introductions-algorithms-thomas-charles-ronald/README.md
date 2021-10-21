@@ -25,6 +25,7 @@ fi
 . .venv/bin/activate
 pip install -r requirements.txt
 python insertion_sort.py
+python exercise_01_01_004.py
 
 ```
 
