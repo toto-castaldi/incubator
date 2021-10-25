@@ -3,10 +3,19 @@ import firebase_admin
 import utils
 import os
 import traceback
+import db
 from firebase_admin import credentials
 from firebase_admin import auth
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+
+db.connection_param = {
+    "dbname" : "moneymap", 
+    "user" : "moneymap", 
+    "password" : "moneymap", 
+    "host" : "localhost",
+    "port" : 5432
+}
 
 
 logger = utils.init_log()
@@ -53,6 +62,12 @@ def handler(method, path, request_query, request_headers, request_body):
 @authenticated
 def card_usage_create(query, header, body):
     logger.debug(body)
+
+    amount = body.get('amount')
+    description = body.get('description')
+    user = query.get('uid')
+
+    db.insert_card_usage(amount, description, user)
 
     return (201, { 'message': 'card usage created' })
 
