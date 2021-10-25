@@ -66,8 +66,9 @@ def card_usage_create(query, header, body):
     amount = body.get('amount')
     description = body.get('description')
     user = query.get('uid')
+    tag = query.get('tag')
 
-    db.insert_card_usage(amount, description, user)
+    db.insert_card_usage(amount, description, user, tag)
 
     return (201, { 'message': 'card usage created' })
 

@@ -9,9 +9,9 @@ connection_param = None
 
 INSERT_CARD_USAGE = """
                     INSERT INTO "card-usage"
-                    ("user", "description", "amount")
+                    ("user", "description", "amount", "tag")
                     VALUES(
-                      %(user)s, %(description)s, %(amount)s
+                      %(user)s, %(description)s, %(amount)s, %(tag)s
                     );"""
 
 
@@ -50,9 +50,10 @@ def execute(query, args={}, format=None):
       cursor.execute(query, args)
 
 
-def insert_card_usage(amount, description, user):
+def insert_card_usage(amount, description, user, tag):
     execute(INSERT_CARD_USAGE, args={
         "user" : user,
         "description" : description,
-        "amount" : amount
+        "amount" : amount,
+        "tag" : tag
     })

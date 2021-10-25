@@ -49,7 +49,7 @@ fi
 ## DB
 
 ```
-docker run --name moneymap -d -p 5432:5432 -e POSTGRES_PASSWORD=moneymap -e POSTGRES_USER=moneymap -e POSTGRES_DB=moneymap postgres:13.3
+docker run --rm --name moneymap -p 5432:5432 -e POSTGRES_PASSWORD=moneymap -e POSTGRES_USER=moneymap -e POSTGRES_DB=moneymap postgres:13.3
 ```
 
 ## Init DB

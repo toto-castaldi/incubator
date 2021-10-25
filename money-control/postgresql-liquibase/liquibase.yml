@@ -10,6 +10,8 @@ databaseChangeLog:
               - column:
                   name: id
                   type: serial
+                  constraints:
+                    primaryKey: true
               - column:
                   name: user
                   type: varchar
@@ -25,4 +27,10 @@ databaseChangeLog:
                   type: money
                   constraints:
                     nullable: false
+              - column:
+                  name: tag
+                  type: varchar
+                  constraints:
+                    nullable: false
+  
               
