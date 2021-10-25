@@ -57,3 +57,13 @@ docker run --name moneymap -d -p 5432:5432 -e POSTGRES_PASSWORD=moneymap -e POST
 cd postgresql-liquibase
 docker run --rm --link moneymap:postgres -v `pwd`:/drivers -v `pwd`/liquibase.yml:/liquibase.yml -e "LIQUIBASE_URL=jdbc:postgresql://postgres/moneymap" -e "LIQUIBASE_USERNAME=moneymap" -e "LIQUIBASE_PASSWORD=moneymap" skillbillsrl/liquibase update
 ```
+
+## BE
+
+```
+. .venv/bin/activate
+cd be
+pip install -r requirements.txt
+python LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] src/be_server.py
+
+```
