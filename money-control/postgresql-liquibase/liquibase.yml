@@ -1,0 +1,17 @@
+
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: toto
+      changes:
+        - createTable:
+            tableName: card-usage
+            columns:
+              - column: id
+                  type: serial
+              - column:
+                  name: description
+                  type: varchar
+                  constraints:
+                    nullable: false
+              
