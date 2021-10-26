@@ -64,6 +64,11 @@ docker run --rm --link moneymap:postgres -v `pwd`:/drivers -v `pwd`/liquibase.ym
 . .venv/bin/activate
 cd be
 pip install -r requirements.txt
-python LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] src/be_server.py
+LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] python src/be_server.py
 
+```
+
+## FE
+
+```
 ```

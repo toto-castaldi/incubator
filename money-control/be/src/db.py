@@ -14,6 +14,12 @@ INSERT_CARD_USAGE = """
                       %(user)s, %(description)s, %(amount)s, %(tag)s
                     );"""
 
+SEARCH_TAG = """
+              select distinct tag 
+              from "card-usage" 
+              where "user" = %(user)s and upper(tag) like %(like)s
+              ;"""
+
 
 
 def get_conn():
@@ -57,3 +63,14 @@ def insert_card_usage(amount, description, user, tag):
         "amount" : amount,
         "tag" : tag
     })
+
+def search_tags(user, term):
+    term= term.replace('=', '==').replace('%', '=%').replace('_', '=_')
+    like = ('%'+term+'%').upper()
+
+    logger.debug(f"{user}, {like}")
+
+    return list(map(lambda el : el["tag"], fetch(SEARCH_TAG, args={
+        "user" : user,
+        "like" : like
+    }, all=True)))

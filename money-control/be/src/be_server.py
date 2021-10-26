@@ -66,14 +66,25 @@ def card_usage_create(query, header, body):
     amount = body.get('amount')
     description = body.get('description')
     user = query.get('uid')
-    tag = query.get('tag')
+    tag = body.get('tag')
 
     db.insert_card_usage(amount, description, user, tag)
 
     return (201, { 'message': 'card usage created' })
 
+@authenticated
+def search_tag(query, header, body):
+    logger.debug(query.get('like'))
+
+    tags = db.search_tags(query.get('uid'), query.get('like'))
+
+    logger.debug(tags)
+
+    return (200, { 'tags' : tags })
+
 routes = {
-    "/card-usage" : {"POST" : card_usage_create}
+    "/card-usage" : {"POST" : card_usage_create},
+    "/tag" : {"GET" : search_tag}
 }
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
