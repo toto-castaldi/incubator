@@ -20,6 +20,12 @@ SEARCH_TAG = """
               where "user" = %(user)s and upper(tag) like %(like)s
               ;"""
 
+SEARCH_DESCRIPTION = """
+                      select distinct description
+                      from "card-usage" 
+                      where "user" = %(user)s and upper(description) like %(like)s
+                      ;"""
+
 
 
 def get_conn():
@@ -55,6 +61,10 @@ def execute(query, args={}, format=None):
         query = query.format(*format)
       cursor.execute(query, args)
 
+def like_term(term):
+  term= term.replace('=', '==').replace('%', '=%').replace('_', '=_')
+  like = ('%'+term+'%').upper()
+  return like
 
 def insert_card_usage(amount, description, user, tag):
     execute(INSERT_CARD_USAGE, args={
@@ -65,12 +75,13 @@ def insert_card_usage(amount, description, user, tag):
     })
 
 def search_tags(user, term):
-    term= term.replace('=', '==').replace('%', '=%').replace('_', '=_')
-    like = ('%'+term+'%').upper()
-
-    logger.debug(f"{user}, {like}")
-
     return list(map(lambda el : el["tag"], fetch(SEARCH_TAG, args={
         "user" : user,
-        "like" : like
+        "like" : like_term(term)
+    }, all=True)))
+
+def search_description(user, term):
+    return list(map(lambda el : el["description"], fetch(SEARCH_DESCRIPTION, args={
+        "user" : user,
+        "like" : like_term(term)
     }, all=True)))

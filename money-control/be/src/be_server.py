@@ -82,9 +82,17 @@ def search_tag(query, header, body):
 
     return (200, { 'tags' : tags })
 
+@authenticated
+def search_description(query, header, body):
+
+    descriptions = db.search_description(query.get('uid'), query.get('like'))
+
+    return (200, { 'descriptions' : descriptions })
+
 routes = {
     "/card-usage" : {"POST" : card_usage_create},
-    "/tag" : {"GET" : search_tag}
+    "/tag" : {"GET" : search_tag},
+    "/description" : {"GET" : search_description}
 }
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
