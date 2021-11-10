@@ -13,10 +13,9 @@ db.connection_param = {
     "dbname" : "moneymap", 
     "user" : "moneymap", 
     "password" : "moneymap", 
-    "host" : "localhost",
+    "host" : os.environ.get("DB_HOST", "localhost"),
     "port" : 5432
 }
-
 
 logger = utils.init_log()
 
@@ -89,10 +88,15 @@ def search_description(query, header, body):
 
     return (200, { 'descriptions' : descriptions })
 
+def echo(query, header, body):
+
+    return (200, { 'ok': 'ok' })
+
 routes = {
     "/card-usage" : {"POST" : card_usage_create},
     "/tag" : {"GET" : search_tag},
-    "/description" : {"GET" : search_description}
+    "/description" : {"GET" : search_description},
+    "/echo" : {"GET" : echo}
 }
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])

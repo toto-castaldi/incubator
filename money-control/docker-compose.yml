@@ -7,6 +7,7 @@ services:
     command: "python src/be_server.py"
     environment:
       - FIREBASE_ACCOUNT_KEY_PATH=/firebase.json
+      - DB_HOST=db
     volumes:
       - "$FIREBASE_ACCOUNT_KEY_PATH:/firebase.json"
   db:
