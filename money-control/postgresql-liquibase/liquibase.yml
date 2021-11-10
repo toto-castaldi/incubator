@@ -32,5 +32,47 @@ databaseChangeLog:
                   type: varchar
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 2
+      author: toto
+      changes:
+        - createTable:
+            tableName: cc-movement
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: bank
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fingerprint
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: money
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: money
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user
+                  type: money
+                  constraints:
+                    nullable: false
   
               

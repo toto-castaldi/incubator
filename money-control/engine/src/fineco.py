@@ -17,7 +17,7 @@ def import_xlsx(file_name) :
             desc = row.get(3)
             full_desc = row.get(4)
             print(date, in_amount, out_amount, desc, full_desc)
-            the_cc_movment = CC_Movement(date, in_amount if out_amount == 'nan' else out_amount, desc + " " + full_desc)
+            the_cc_movment = CC_Movement('FINECO', date, in_amount if out_amount == 'nan' else out_amount, desc + " " + full_desc)
             the_cc_movment.save_on_db()
             
     

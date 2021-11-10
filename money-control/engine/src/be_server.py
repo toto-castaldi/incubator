@@ -8,6 +8,8 @@ from firebase_admin import credentials
 from firebase_admin import auth
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
+
 
 db.connection_param = {
     "dbname" : "moneymap", 
@@ -89,14 +91,20 @@ def search_description(query, header, body):
     return (200, { 'descriptions' : descriptions })
 
 def echo(query, header, body):
+    return (200, { 'ok': 'ok' })
 
+def upload(query, header, body):
+    file = query.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(os.environ.get('UPLOAD_FOLDER', '.'), filename))
     return (200, { 'ok': 'ok' })
 
 routes = {
     "/card-usage" : {"POST" : card_usage_create},
     "/tag" : {"GET" : search_tag},
     "/description" : {"GET" : search_description},
-    "/echo" : {"GET" : echo}
+    "/echo" : {"GET" : echo},
+    "/upload" : { "POST", upload}
 }
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
