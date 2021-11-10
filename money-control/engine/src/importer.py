@@ -8,7 +8,7 @@ logger = utils.init_log()
 basepath = os.environ.get("INPUT_FOLDER")
 
 importers = {
-    r".*fineco.*\.xlsx" : fineco.import_xlsx
+    r".*fineco.*\.xlsx$" : fineco.import_xlsx
 }
 
 for entry in os.listdir(basepath):
