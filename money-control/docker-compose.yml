@@ -1,8 +1,24 @@
 version: "3.9"
 services:
-  web:
+  api:
     build: engine
     ports:
       - "5000:5000"
+    command: "python src/be_server.py"
+    environment:
+      - FIREBASE_ACCOUNT_KEY_PATH=/firebase.json
+    volumes:
+      - "$FIREBASE_ACCOUNT_KEY_PATH:/firebase.json"
   db:
     image: "postgres:13.3"
+    environment:
+      - POSTGRES_PASSWORD=moneymap
+      - POSTGRES_USER=moneymap
+      - POSTGRES_DB=moneymap
+  liquibase:
+    build: postgresql-liquibase
+    environment:
+      - LIQUIBASE_URL=jdbc:postgresql://db/moneymap
+      - LIQUIBASE_USERNAME=moneymap
+      - LIQUIBASE_PASSWORD=moneymap
+    command: "update"
