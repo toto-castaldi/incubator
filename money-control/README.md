@@ -68,15 +68,6 @@ LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] python src
 
 ```
 
-## IMPORTER
-
-```
-. .venv/bin/activate
-cd engine
-pip install -r requirements.txt
-LOG_LEVEL=DEBUG INPUT_FOLDER=[PATH_OF_YOUR_CC_FILES] python src/importer.py
-```
-
 # DOCKER
 
 ```

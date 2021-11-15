@@ -4,6 +4,8 @@ import utils
 import os
 import traceback
 import db
+import tempfile
+import importer
 from firebase_admin import credentials
 from firebase_admin import auth
 from flask import Flask, request, jsonify, make_response
@@ -24,25 +26,42 @@ logger = utils.init_log()
 cred = credentials.Certificate(os.path.abspath(os.environ.get("FIREBASE_ACCOUNT_KEY_PATH")))
 firebase_admin.initialize_app(cred)
 
+temp_folder_name = os.environ.get("TEMP_FOLDER", "tmp")
+
+os.makedirs(temp_folder_name, exist_ok=True)
+
 app = Flask(__name__)
+
+def extract_token(header):
+    token = header.get('Authorization')
+    if not token:
+        return (False, None)
+
+    try:
+        decoded_token = auth.verify_id_token(token)
+    except:
+        return (True, None)
+
+    return (True, decoded_token.get('uid'))
+        
 
 def authenticated(f):
     @functools.wraps(f)  
     def wrapper(*args, **kwargs):
         query, header, body = args
 
-        token = header.get('Authorization')
-        if not token:
+        present, token_value = extract_token(header)
+
+        if present:
+            if token_value:
+                query['uid'] = token_value
+                value = f(*args, **kwargs)
+                return value
+            else:
+                return (400, { 'message': 'Invalid token' })
+        else:
             return (400, { 'message': 'Missing required header parameter' })
 
-        try:
-            decoded_token = auth.verify_id_token(token)
-        except:
-            return (400, { 'message': 'Invalid token' })
-       
-        query['uid'] = decoded_token.get('uid')
-        value = f(*args, **kwargs)
-        return value
     return wrapper
 
 def handler(method, path, request_query, request_headers, request_body):
@@ -93,19 +112,34 @@ def search_description(query, header, body):
 def echo(query, header, body):
     return (200, { 'ok': 'ok' })
 
-def upload(query, header, body):
-    file = query.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(os.environ.get('UPLOAD_FOLDER', '.'), filename))
-    return (200, { 'ok': 'ok' })
-
 routes = {
     "/card-usage" : {"POST" : card_usage_create},
     "/tag" : {"GET" : search_tag},
     "/description" : {"GET" : search_description},
-    "/echo" : {"GET" : echo},
-    "/upload" : { "POST", upload}
+    "/echo" : {"GET" : echo}
 }
+
+@app.route('/upload-fineco', methods = ['POST'])
+def upload_fineco():
+    token_present, token_value = extract_token(request.headers)
+    if token_present and token_value is not None:
+
+        temp = tempfile.NamedTemporaryFile()
+        temp_name = os.path.join(temp_folder_name, os.path.basename(temp.name) + "-fineco.xlsx")
+        #print(request.data)
+        with open(temp_name, 'wb') as f:
+            f.write(request.data)
+            f.flush()
+            f.close()
+        logger.debug(f"{temp_name} written")
+
+        importer.import_files(temp_folder_name, token_value)
+
+        os.remove(temp_name)
+
+        return {}, 200
+    else:
+        return {}, 401
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
 @app.route('/<path:path>', methods=['POST', 'GET', 'DELETE'])

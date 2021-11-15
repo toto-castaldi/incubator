@@ -14,6 +14,13 @@ INSERT_CARD_USAGE = """
                       %(user)s, %(description)s, %(amount)s, %(tag)s
                     );"""
 
+INSERT_CC_MOVEMENT = """
+                    INSERT INTO "cc-movement"
+                    ("bank", "fingerprint", "date", "amount", "description", "user")
+                    VALUES(
+                      %(bank)s, %(fingerprint)s, %(date)s, %(amount)s, %(description)s, %(user)s
+                    );"""
+
 SEARCH_TAG = """
               select distinct tag 
               from "card-usage" 
@@ -67,21 +74,40 @@ def like_term(term):
   return like
 
 def insert_card_usage(amount, description, user, tag):
-    execute(INSERT_CARD_USAGE, args={
+  execute(INSERT_CARD_USAGE, args={
+      "user" : user,
+      "description" : description,
+      "amount" : amount,
+      "tag" : tag
+  })
+
+def search_tags(user, term):
+  return list(map(lambda el : el["tag"], fetch(SEARCH_TAG, args={
+      "user" : user,
+      "like" : like_term(term)
+  }, all=True)))
+
+def search_description(user, term):
+  return list(map(lambda el : el["description"], fetch(SEARCH_DESCRIPTION, args={
+      "user" : user,
+      "like" : like_term(term)
+  }, all=True)))
+
+
+def insert_cc_movement(bank, fingerprint, date, amount, description, user):
+  print({
         "user" : user,
         "description" : description,
         "amount" : amount,
-        "tag" : tag
+        "bank" : bank,
+        "fingerprint" : fingerprint,
+        "date" : date
     })
-
-def search_tags(user, term):
-    return list(map(lambda el : el["tag"], fetch(SEARCH_TAG, args={
+  execute(INSERT_CC_MOVEMENT, args={
         "user" : user,
-        "like" : like_term(term)
-    }, all=True)))
-
-def search_description(user, term):
-    return list(map(lambda el : el["description"], fetch(SEARCH_DESCRIPTION, args={
-        "user" : user,
-        "like" : like_term(term)
-    }, all=True)))
+        "description" : description,
+        "amount" : amount,
+        "bank" : bank,
+        "fingerprint" : fingerprint,
+        "date" : date
+    })

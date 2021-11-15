@@ -42,8 +42,6 @@ databaseChangeLog:
               - column:
                   name: id
                   type: serial
-                  constraints:
-                    primaryKey: true
               - column:
                   name: bank
                   type: varchar
@@ -66,13 +64,21 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: money
+                  type: varchar
                   constraints:
                     nullable: false
               - column:
                   name: user
-                  type: money
+                  type: varchar
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 3
+      author: toto
+      changes:
+          - addPrimaryKey:
+              columnNames: "fingerprint, user"
+              tableName: "cc-movement"
+              validate : true
   
               
