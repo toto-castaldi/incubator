@@ -93,6 +93,17 @@ def card_usage_create(query, header, body):
     return (201, { 'message': 'card usage created' })
 
 @authenticated
+def map_movement_usage(query, header, body):
+    logger.debug(body)
+
+    card_usage_id = body.get('card-usage-id')
+    cc_movement_id = body.get('cc-movement-id')
+
+    db.map_movement_usage(card_usage_id, cc_movement_id)
+
+    return (201, { 'message': 'mapping created' })
+
+@authenticated
 def search_tag(query, header, body):
     logger.debug(query.get('like'))
 
@@ -114,6 +125,7 @@ def echo(query, header, body):
 
 routes = {
     "/card-usage" : {"POST" : card_usage_create},
+    "/map" : {"POST" : map_movement_usage},
     "/tag" : {"GET" : search_tag},
     "/description" : {"GET" : search_description},
     "/echo" : {"GET" : echo}

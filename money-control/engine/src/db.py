@@ -21,6 +21,13 @@ INSERT_CC_MOVEMENT = """
                       %(bank)s, %(fingerprint)s, %(date)s, %(amount)s, %(description)s, %(user)s
                     );"""
 
+INSERT_MAPPING = """
+                    INSERT INTO "usage-to-movement"
+                    ("usage_id", "movement_id")
+                    VALUES(
+                      %(card_usage_id)s, %(cc_movement_id)s
+                    );"""
+
 SEARCH_TAG = """
               select distinct tag 
               from "card-usage" 
@@ -85,6 +92,12 @@ def insert_card_usage(amount, description, user, tag):
       "description" : description,
       "amount" : amount,
       "tag" : tag
+  })
+
+def map_movement_usage(card_usage_id, cc_movement_id):
+  execute(INSERT_MAPPING, args={
+      "card_usage_id" : card_usage_id,
+      "cc_movement_id" : cc_movement_id
   })
 
 def search_tags(user, term):

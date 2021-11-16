@@ -16,6 +16,8 @@ services:
       - POSTGRES_PASSWORD=moneymap
       - POSTGRES_USER=moneymap
       - POSTGRES_DB=moneymap
+    ports:
+      - "5432:5432"
   liquibase:
     build: postgresql-liquibase
     environment:
