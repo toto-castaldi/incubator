@@ -133,7 +133,10 @@ def upload_fineco():
             f.close()
         logger.debug(f"{temp_name} written")
 
-        importer.import_files(temp_folder_name, token_value)
+        try:
+            importer.import_files(temp_folder_name, token_value)
+        except Exception as e:
+            traceback.print_exc()        
 
         os.remove(temp_name)
 

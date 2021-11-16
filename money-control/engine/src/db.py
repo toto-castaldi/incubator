@@ -33,6 +33,12 @@ SEARCH_DESCRIPTION = """
                       where "user" = %(user)s and upper(description) like %(like)s
                       ;"""
 
+SEARCH_CC_MOVEMENT = """
+                      select * 
+                      from "cc-movement"
+                      where "user" = %(user)s and "bank" = %(bank)s and "fingerprint" = %(fingerprint)s 
+                      ;"""
+
 
 
 def get_conn():
@@ -92,6 +98,13 @@ def search_description(user, term):
       "user" : user,
       "like" : like_term(term)
   }, all=True)))
+
+def search_cc_movement(bank, fingerprint, user):
+  return fetch(SEARCH_CC_MOVEMENT, args={
+      "user" : user,
+      "bank" : bank,
+      "fingerprint" : str(fingerprint)
+  })
 
 
 def insert_cc_movement(bank, fingerprint, date, amount, description, user):
