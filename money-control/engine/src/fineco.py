@@ -19,7 +19,9 @@ def import_xlsx(file_name, user) :
             desc = row.get(3)
             full_desc = row.get(4)
 
-            the_cc_movment = CC_Movement('FINECO', date, int(in_amount if  numpy.isnan(out_amount) else out_amount), desc + " " + full_desc)
+            amount = float(in_amount if  numpy.isnan(out_amount) else out_amount)
+
+            the_cc_movment = CC_Movement('FINECO', date, amount, str(desc) + " " + str(full_desc))
             the_cc_movment.save_on_db(user)
             
     
