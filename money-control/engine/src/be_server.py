@@ -120,6 +120,21 @@ def search_description(query, header, body):
 
     return (200, { 'descriptions' : descriptions })
 
+@authenticated
+def delete_cc_movement(query, header, body):
+
+    logger.debug(query.get('id'))
+
+    cc_movement = db.search_cc_movement_id_user(query.get('id'), query.get('uid'))
+
+    if cc_movement:
+        db.delete_cc_movement_id(query.get('id'))
+        return (200, { 'descriptions' : f'cc_movement {cc_movement}  deleted' })
+    else:
+        return (404, { 'descriptions' : 'movement not found' })
+
+    
+
 def echo(query, header, body):
     return (200, { 'ok': 'ok' })
 
@@ -128,7 +143,8 @@ routes = {
     "/map" : {"POST" : map_movement_usage},
     "/tag" : {"GET" : search_tag},
     "/description" : {"GET" : search_description},
-    "/echo" : {"GET" : echo}
+    "/echo" : {"GET" : echo},
+    "/cc-movement" : {"DELETE" : delete_cc_movement},
 }
 
 @app.route('/upload-fineco', methods = ['POST'])

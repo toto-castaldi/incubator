@@ -46,6 +46,17 @@ SEARCH_CC_MOVEMENT = """
                       where "user" = %(user)s and "bank" = %(bank)s and "fingerprint" = %(fingerprint)s 
                       ;"""
 
+SEARCH_CC_MOVEMENT_ID_USER = """
+                      select * 
+                      from "cc-movement"
+                      where "user" = %(user)s and "id" = %(id)s
+                      ;"""
+
+DELETE_CC_MOVEMENT = """
+                      delete 
+                      from "cc-movement"
+                      where "id" = %(id)s
+                      ;"""
 
 
 def get_conn():
@@ -119,6 +130,17 @@ def search_cc_movement(bank, fingerprint, user):
       "fingerprint" : str(fingerprint)
   })
 
+def search_cc_movement_id_user(id, user):
+  return fetch(SEARCH_CC_MOVEMENT_ID_USER, args={
+      "user" : user,
+      "id" : id
+  })
+
+
+def delete_cc_movement_id(id):
+  execute(DELETE_CC_MOVEMENT, args={
+      "id" : id
+  })
 
 def insert_cc_movement(bank, fingerprint, date, amount, description, user):
   print({
