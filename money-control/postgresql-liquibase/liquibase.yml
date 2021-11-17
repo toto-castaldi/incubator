@@ -118,6 +118,19 @@ databaseChangeLog:
             selectQuery: select * from "cc-movement" except select cm.* from "cc-movement" cm , "usage-to-movement" utm where cm.id = utm.movement_id
             viewName:  unmapped-cc-movement
         - addUniqueConstraint:
-              columnNames: "usage_id, movement_id"
-              tableName: "usage-to-movement"
-              validate : true
+            columnNames: "usage_id, movement_id"
+            tableName: "usage-to-movement"
+            validate : true
+  - changeSet:
+      id: 6
+      author: toto
+      changes:
+        - addColumn:
+            tableName : cc-movement
+            columns:
+              - column:
+                  name: discount
+                  type: integer
+        - createView:  
+            selectQuery: select cu.*, cm."date" , cm.description as full_desc from "card-usage" cu, "usage-to-movement" utm, "cc-movement" cm where cu.id = utm.usage_id and cm.id = utm.movement_id
+            viewName:  consolidated-expenditure
