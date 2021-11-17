@@ -116,9 +116,9 @@ def search_tag(query, header, body):
 @authenticated
 def search_description(query, header, body):
 
-    descriptions = db.search_description(query.get('uid'), query.get('like'))
+    result = db.search_description(query.get('uid'), query.get('like'))
 
-    return (200, { 'descriptions' : descriptions })
+    return (200, { 'result' : result })
 
 @authenticated
 def delete_cc_movement(query, header, body):
@@ -129,9 +129,9 @@ def delete_cc_movement(query, header, body):
 
     if cc_movement:
         db.delete_cc_movement_id(query.get('id'))
-        return (200, { 'descriptions' : f'cc_movement {cc_movement}  deleted' })
+        return (200, { 'result' : f'cc_movement {cc_movement}  deleted' })
     else:
-        return (404, { 'descriptions' : 'movement not found' })
+        return (404, { 'result' : 'movement not found' })
 
     
 
@@ -168,7 +168,7 @@ def upload_cc_fineco():
 
         os.remove(temp_name)
 
-        return {}, 200
+        return { 'result' : 'fineco cc movements loaded'}, 200
     else:
         return {}, 401
 
@@ -193,7 +193,7 @@ def upload_card_fineco():
 
         os.remove(temp_name)
 
-        return {}, 200
+        return { 'result' : 'fineco card movements loaded'}, 200
     else:
         return {}, 401
 
