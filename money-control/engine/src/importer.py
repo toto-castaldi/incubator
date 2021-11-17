@@ -6,7 +6,8 @@ import fineco
 logger = utils.init_log()
 
 importers = {
-    r".*-fineco.xlsx$" : fineco.import_xlsx
+    r".*-cc-fineco.xlsx$" : fineco.import_cc_xlsx,
+    r".*-card-fineco.xls$" : fineco.import_card_xls
 }
 
 def import_files(basepath, user):
@@ -15,5 +16,5 @@ def import_files(basepath, user):
             logger.debug(entry)
             for re_val, imp in importers.items():
                 if re.match(re_val, entry):
-                    logger.info(f"{entry} is a known CC movement file")
+                    logger.info(f"{entry} is a known file")
                     importers[re_val](os.path.join(basepath, entry), user)

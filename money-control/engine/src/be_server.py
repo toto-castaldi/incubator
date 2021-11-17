@@ -147,13 +147,38 @@ routes = {
     "/cc-movement" : {"DELETE" : delete_cc_movement},
 }
 
-@app.route('/upload-fineco', methods = ['POST'])
-def upload_fineco():
+@app.route('/upload-fineco-cc-movements', methods = ['POST'])
+def upload_cc_fineco():
     token_present, token_value = extract_token(request.headers)
     if token_present and token_value is not None:
 
         temp = tempfile.NamedTemporaryFile()
-        temp_name = os.path.join(temp_folder_name, os.path.basename(temp.name) + "-fineco.xlsx")
+        temp_name = os.path.join(temp_folder_name, os.path.basename(temp.name) + "-cc-fineco.xlsx")
+        #print(request.data)
+        with open(temp_name, 'wb') as f:
+            f.write(request.data)
+            f.flush()
+            f.close()
+        logger.debug(f"{temp_name} written")
+
+        try:
+            importer.import_files(temp_folder_name, token_value)
+        except Exception as e:
+            traceback.print_exc()        
+
+        os.remove(temp_name)
+
+        return {}, 200
+    else:
+        return {}, 401
+
+@app.route('/upload-fineco-card-movements', methods = ['POST'])
+def upload_card_fineco():
+    token_present, token_value = extract_token(request.headers)
+    if token_present and token_value is not None:
+
+        temp = tempfile.NamedTemporaryFile()
+        temp_name = os.path.join(temp_folder_name, os.path.basename(temp.name) + "-card-fineco.xls")
         #print(request.data)
         with open(temp_name, 'wb') as f:
             f.write(request.data)

@@ -6,7 +6,7 @@ from cc_movement import CC_Movement
 
 logger = utils.init_log()
 
-def import_xlsx(file_name, user) :
+def import_cc_xlsx(file_name, user) :
     xlsx = pandas.read_excel(file_name, sheet_name=None)
 
     sheet = xlsx.get('Organization')
@@ -21,8 +21,24 @@ def import_xlsx(file_name, user) :
 
             amount = float(in_amount if  numpy.isnan(out_amount) else out_amount)
 
-            the_cc_movment = CC_Movement('FINECO', date, amount, str(desc) + " " + str(full_desc))
+            the_cc_movment = CC_Movement('FINECO-CC', date, amount, str(desc) + " " + str(full_desc))
             the_cc_movment.save_on_db(user)
             
+
+def import_card_xls(file_name, user) :
+    xlsx = pandas.read_excel(file_name, sheet_name=None)
+
+    sheet = xlsx.get('movimenti carta')
+
+    for indexrow, row in sheet.iterrows():
+        if indexrow > 1:
+            date = row.get(3)
+            circuit = row.get(8)
+            amount = row.get(10)
+            desc = row.get(5)
+
+            if not(isinstance(date, float) and numpy.isnan(date)) and circuit == 'MASTERCARD':
+                the_cc_movment = CC_Movement('FINECO-CARD', date, amount, str(desc))
+                the_cc_movment.save_on_db(user)
     
 
