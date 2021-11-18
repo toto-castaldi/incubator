@@ -66,6 +66,14 @@ SUM_ID_USER = """
                       select sum(amount) as sum from "consolidated-expenditure" 
                       ;"""
 
+DELTA_DAYS_ID_USER_FROM_TO = """
+                      select max(date) - min(date) as delta from "consolidated-expenditure" where date >= %(from)s and date <= %(to)s
+                      ;"""
+
+SUM_ID_USER_FROM_TO = """
+                      select sum(amount) as sum from "consolidated-expenditure" where date >= %(from)s and date <= %(to)s
+                      ;"""
+
 DELETE_CC_MOVEMENT = """
                       delete 
                       from "cc-movement"
@@ -167,15 +175,29 @@ def search_card_usage_id_user(id, user):
       "id" : id
   })
 
-def whole_delta_days(user):
-  return fetch(DELTA_DAYS_ID_USER, args={
-      "user" : user
-  })
+def whole_delta_days(user, query_from, query_to):
+  if query_from is not None and query_to is not None:
+    return fetch(DELTA_DAYS_ID_USER_FROM_TO, args={
+        "user" : user,
+        "from" : query_from,
+        "to" : query_to
+    })
+  else:
+    return fetch(DELTA_DAYS_ID_USER, args={
+        "user" : user,
+    })
 
-def whold_sum_amount(user):
-  return fetch(SUM_ID_USER, args={
-      "user" : user
-  })
+def whold_sum_amount(user, query_from, query_to):
+  if query_from is not None and query_to is not None:
+    return fetch(SUM_ID_USER_FROM_TO, args={
+        "user" : user,
+        "from" : query_from,
+        "to" : query_to
+    })
+  else:
+    return fetch(SUM_ID_USER, args={
+        "user" : user
+    })
 
 def delete_cc_movement_id(id):
   execute(DELETE_CC_MOVEMENT, args={

@@ -166,8 +166,11 @@ def card_usage_update(query, header, body):
 @authenticated
 def daily_rate(query, header, body):
 
-    delta_days = db.whole_delta_days(query.get('uid'))['delta']
-    amount = db.whold_sum_amount(query.get('uid'))['sum']
+    query_from = query.get('from')
+    query_to = query.get('to')
+
+    delta_days = db.whole_delta_days(query.get('uid'), query_from, query_to)['delta']
+    amount = db.whold_sum_amount(query.get('uid'), query_from, query_to)['sum']
 
     logger.debug( amount / delta_days)
     
