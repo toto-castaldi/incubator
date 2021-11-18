@@ -58,6 +58,11 @@ DELETE_CC_MOVEMENT = """
                       where "id" = %(id)s
                       ;"""
 
+UPDATE_CC_MOVEMENT_DISCOUNT = """
+                      update "cc-movement"
+                      set "discount" = %(discount)s
+                      where "id" = %(id)s
+                      ;"""
 
 def get_conn():
   global conn
@@ -159,3 +164,9 @@ def insert_cc_movement(bank, fingerprint, date, amount, description, user):
         "fingerprint" : fingerprint,
         "date" : date
     })
+
+def apply_discount_cc_movement_id(id, discount):
+  execute(UPDATE_CC_MOVEMENT_DISCOUNT, args={
+      "id" : id,
+      "discount" : discount
+  })

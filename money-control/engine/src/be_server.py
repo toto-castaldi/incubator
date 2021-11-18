@@ -133,6 +133,18 @@ def delete_cc_movement(query, header, body):
     else:
         return (404, { 'result' : 'movement not found' })
 
+@authenticated
+def cc_movement_discount(query, header, body):
+
+    cc_movement = db.search_cc_movement_id_user(body.get('id'), query.get('uid'))
+
+    if cc_movement:
+        discount_rate = body.get('discount')
+        db.apply_discount_cc_movement_id(body.get('id'), discount_rate)
+        return (200, { 'result' : f'cc_movement {cc_movement} with discount {discount_rate}' })
+    else:
+        return (404, { 'result' : 'movement not found' })
+
     
 
 def echo(query, header, body):
@@ -145,6 +157,7 @@ routes = {
     "/description" : {"GET" : search_description},
     "/echo" : {"GET" : echo},
     "/cc-movement" : {"DELETE" : delete_cc_movement},
+    "/cc-movement-discount" : {"PUT" : cc_movement_discount}
 }
 
 @app.route('/upload-fineco-cc-movements', methods = ['POST'])
@@ -198,7 +211,7 @@ def upload_card_fineco():
         return {}, 401
 
 @app.route('/', defaults={'path': ''}, methods=['POST', 'GET'])
-@app.route('/<path:path>', methods=['POST', 'GET', 'DELETE'])
+@app.route('/<path:path>', methods=['POST', 'GET', 'DELETE', 'PUT'])
 def main_entry_point(path):
     method = request.method
     request_query = request.args.copy()

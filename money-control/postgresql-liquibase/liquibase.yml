@@ -131,6 +131,7 @@ databaseChangeLog:
               - column:
                   name: discount
                   type: integer
+                  defaultValue: 0
         - createView:  
-            selectQuery: select cu.*, cm."date" , cm.description as full_desc from "card-usage" cu, "usage-to-movement" utm, "cc-movement" cm where cu.id = utm.usage_id and cm.id = utm.movement_id
+            selectQuery: select cu."user", cu.description, cu.amount - (cm.amount * cm.discount / 100) as amount , cm.discount, cu.tag, cm."date" , cm.description as full_desc from "card-usage" cu, "usage-to-movement" utm, "cc-movement" cm where cu.id = utm.usage_id and cm.id = utm.movement_id
             viewName:  consolidated-expenditure
