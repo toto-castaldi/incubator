@@ -134,16 +134,44 @@ def delete_cc_movement(query, header, body):
         return (404, { 'result' : 'movement not found' })
 
 @authenticated
-def cc_movement_discount(query, header, body):
+def card_usage_discount(query, header, body):
 
-    cc_movement = db.search_cc_movement_id_user(body.get('id'), query.get('uid'))
+    card_usage = db.search_card_usage_id_user(body.get('id'), query.get('uid'))
 
-    if cc_movement:
+    if card_usage:
         discount_rate = body.get('discount')
-        db.apply_discount_cc_movement_id(body.get('id'), discount_rate)
-        return (200, { 'result' : f'cc_movement {cc_movement} with discount {discount_rate}' })
+        db.apply_discount_card_usage_id(body.get('id'), discount_rate)
+        return (200, { 'result' : f'card_uage {card_usage} with discount {discount_rate}' })
     else:
         return (404, { 'result' : 'movement not found' })
+
+@authenticated
+def card_usage_update(query, header, body):
+
+    card_usage = db.search_card_usage_id_user(body.get('id'), query.get('uid'))
+
+    if card_usage:
+        tag = body.get('tag')
+        if tag:
+            db.apply_tag_card_usage_id(body.get('id'), tag)
+            return (200, { 'result' : f'card_uage {card_usage} with tag {tag}' })
+        discount_rate = body.get('discount')
+        if discount_rate:
+            db.apply_discount_card_usage_id(body.get('id'), discount_rate)
+            return (200, { 'result' : f'card_uage {card_usage} with discount {discount_rate}' })
+        return (501, { 'result' : f'card_uage {card_usage} no update' })
+    else:
+        return (404, { 'result' : 'movement not found' })
+
+@authenticated
+def daily_rate(query, header, body):
+
+    delta_days = db.whole_delta_days(query.get('uid'))['delta']
+    amount = db.whold_sum_amount(query.get('uid'))['sum']
+
+    logger.debug( amount / delta_days)
+    
+    return (200, { 'result' : str(amount / delta_days) })
 
     
 
@@ -151,13 +179,16 @@ def echo(query, header, body):
     return (200, { 'ok': 'ok' })
 
 routes = {
-    "/card-usage" : {"POST" : card_usage_create},
+    "/card-usage" : {
+                        "POST" : card_usage_create,
+                        "PUT" : card_usage_update
+                    },
     "/map" : {"POST" : map_movement_usage},
     "/tag" : {"GET" : search_tag},
     "/description" : {"GET" : search_description},
     "/echo" : {"GET" : echo},
     "/cc-movement" : {"DELETE" : delete_cc_movement},
-    "/cc-movement-discount" : {"PUT" : cc_movement_discount}
+    "/daily_rate" : {"GET" : daily_rate},
 }
 
 @app.route('/upload-fineco-cc-movements', methods = ['POST'])

@@ -52,15 +52,35 @@ SEARCH_CC_MOVEMENT_ID_USER = """
                       where "user" = %(user)s and "id" = %(id)s
                       ;"""
 
+SEARCH_CARD_USAGE_ID_USER = """
+                      select * 
+                      from "card-usage"
+                      where "user" = %(user)s and "id" = %(id)s
+                      ;"""
+
+DELTA_DAYS_ID_USER = """
+                      select max(date) - min(date) as delta from "consolidated-expenditure"
+                      ;"""
+
+SUM_ID_USER = """
+                      select sum(amount) as sum from "consolidated-expenditure" 
+                      ;"""
+
 DELETE_CC_MOVEMENT = """
                       delete 
                       from "cc-movement"
                       where "id" = %(id)s
                       ;"""
 
-UPDATE_CC_MOVEMENT_DISCOUNT = """
-                      update "cc-movement"
+UPDATE_CARD_USAGE_DISCOUNT = """
+                      update "card-usage"
                       set "discount" = %(discount)s
+                      where "id" = %(id)s
+                      ;"""
+
+UPDATE_CARD_USAGE_TAG = """
+                      update "card-usage"
+                      set "tag" = %(tag)s
                       where "id" = %(id)s
                       ;"""
 
@@ -141,6 +161,21 @@ def search_cc_movement_id_user(id, user):
       "id" : id
   })
 
+def search_card_usage_id_user(id, user):
+  return fetch(SEARCH_CARD_USAGE_ID_USER, args={
+      "user" : user,
+      "id" : id
+  })
+
+def whole_delta_days(user):
+  return fetch(DELTA_DAYS_ID_USER, args={
+      "user" : user
+  })
+
+def whold_sum_amount(user):
+  return fetch(SUM_ID_USER, args={
+      "user" : user
+  })
 
 def delete_cc_movement_id(id):
   execute(DELETE_CC_MOVEMENT, args={
@@ -165,8 +200,14 @@ def insert_cc_movement(bank, fingerprint, date, amount, description, user):
         "date" : date
     })
 
-def apply_discount_cc_movement_id(id, discount):
-  execute(UPDATE_CC_MOVEMENT_DISCOUNT, args={
+def apply_discount_card_usage_id(id, discount):
+  execute(UPDATE_CARD_USAGE_DISCOUNT, args={
       "id" : id,
       "discount" : discount
+  })
+
+def apply_tag_card_usage_id(id, tag):
+  execute(UPDATE_CARD_USAGE_TAG, args={
+      "id" : id,
+      "tag" : tag
   })
