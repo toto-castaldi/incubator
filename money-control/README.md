@@ -68,9 +68,10 @@ LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] python src
 
 ```
 
-# DOCKER
+# SERVER
 
 ```
-docker-compose build
-FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] docker-compose up
+./build.sh
+
+LOG_LEVEL=DEBUG FIREBASE_ACCOUNT_KEY_PATH=[your firebase private key] FOLDER_DATA=[your folder for storing data] docker-compose start
 ```
