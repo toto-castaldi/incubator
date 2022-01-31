@@ -24,6 +24,7 @@ class CoinbaseWalletAuth(AuthBase):
             'CB-ACCESS-SIGN': signature,
             'CB-ACCESS-TIMESTAMP': timestamp,
             'CB-ACCESS-KEY': self.api_key,
+            'CB-VERSION' : '2021-11-24'
         })
 
         return request
@@ -31,6 +32,15 @@ class CoinbaseWalletAuth(AuthBase):
 api_url = 'https://api.coinbase.com/v2/'
 auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
 
-r = requests.get(api_url + 'user', auth=auth)
-print(r.json())
-
+r = requests.get(api_url + 'accounts', auth=auth)
+json_response = r.json()
+for account in json_response.get('data'):
+    id = account.get('id')
+    #print(id)
+    if id and len(id) > 12:
+        r = requests.get(api_url + f'accounts/{id}/transactions', auth=auth)
+        json_response = r.json()
+        data = json_response.get('data')
+        if len(data) > 0:
+            for trx in data:
+                print(trx)
