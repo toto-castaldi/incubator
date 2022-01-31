@@ -20,5 +20,5 @@ fi
 ```
 . .venv/bin/activate
 pip install -r requirements.txt
-python example.py
+API_KEY=[YOUR API KEY] API_SECRET=[YOUR API SECRET] python example.py
 ```
