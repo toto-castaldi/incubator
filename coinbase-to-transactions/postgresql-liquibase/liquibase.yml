@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: toto
+      changes:
+        - createTable:
+            tableName: trx
+            columns:
+              - column:
+                  name: user
+                  type: varchar
+                  constraints:
+                    nullable: false

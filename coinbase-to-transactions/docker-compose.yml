@@ -1,0 +1,31 @@
+version: '3'
+services:
+  batch:
+    image : "totocastaldi/personal-finance-batch:${TAG}"
+    links:
+      - postgresql
+    depends_on:
+      - postgresql-liquibase
+  postgresql:
+    image: postgres:11.5
+    volumes:
+      - personal-finance-postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=dbpsql
+      - POSTGRES_USER=dbpsql
+      - POSTGRES_DB=dbpsql
+  postgresql-liquibase:
+    image: totocastaldi/personal-finance-liquibase:${TAG}
+    environment:
+      - LIQUIBASE_URL=jdbc:postgresql://postgresql/dbpsql
+      - LIQUIBASE_USERNAME=dbpsql
+      - LIQUIBASE_PASSWORD=dbpsql
+    links:
+      - postgresql
+    depends_on:
+      - postgresql
+
+volumes:
+  personal-finance:
