@@ -30,17 +30,23 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: creation_time
+                  name: trx_id
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    unique : true
+              - column:
+                  name: updated_at
                   type: timestamp
                   constraints:
                     nullable: false
               - column:
-                  name: euro
+                  name: native_amount_amount
                   type: money
                   constraints:
                     nullable: false
               - column:
-                  name: crypto
+                  name: crypto_amount_amount
                   type: money
                   constraints:
                     nullable: false
@@ -50,12 +56,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: euro_price
-                  type: money
+                  name: crypto_amount_currency
+                  type: varchar
                   constraints:
                     nullable: false
               - column:
-                  name: crypto_name
+                  name: native_amount_currency
                   type: varchar
                   constraints:
                     nullable: false
@@ -69,3 +75,4 @@ databaseChangeLog:
             baseTableName:  coinbase_trx
             referencedColumnNames:  account_id  
             referencedTableName:  account
+      

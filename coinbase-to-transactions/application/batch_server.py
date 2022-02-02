@@ -1,7 +1,6 @@
 import time
 import os
 import schedule
-import time
 import utils
 import db
 import coinbase
@@ -12,9 +11,10 @@ logger = utils.init_log()
 def job():
     logger.info("coinbase")
     accounts = db.load_all_accounts()
-    logger.debug(accounts)
     for account in accounts:
+        logger.debug(account)
         account_transactions = coinbase.load_all_transactions(account)
+        logger.debug(account_transactions)
         db.merge_transactions(account, account_transactions)
 
 
