@@ -1,7 +1,7 @@
 import psycopg2
 import utils
 from psycopg2.extras import RealDictCursor
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 connection_param = {
         "dbname" : "dbpsql", 
@@ -17,6 +17,12 @@ logger = utils.init_log()
 
 ALL_ACCOUNTS = '''
 SELECT * FROM ACCOUNT
+'''
+
+INSERT_COINBASE_TRANSACTION = '''
+INSERT INTO coinbase_trx (account_id, trx_id, updated_at, native_amount_amount, crypto_amount_amount, buy_sell, native_amount_currency, crypto_amount_currency)
+VALUES (%(account_id)s, %(id)s, %(updated_at)s, %(native_amount_amount)s, %(crypto_amount_amount)s, %(type)s, %(native_amount_currency)s, %(crypto_amount_currency)s)
+on conflict (trx_id) do nothing;
 '''
 
 @dataclass
@@ -53,4 +59,12 @@ def load_all_accounts():
     
 
 def merge_transactions(user, transactions):
-    pass
+    logger.debug(user)
+    for transaction in transactions:  
+      with get_conn() as conn:  
+        with conn.cursor() as cursor:
+          arg = asdict(transaction)
+          arg["account_id"] = user.id
+          logger.debug(arg)
+          cursor.execute(INSERT_COINBASE_TRANSACTION, arg)
+      
