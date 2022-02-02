@@ -4,10 +4,68 @@ databaseChangeLog:
       author: toto
       changes:
         - createTable:
-            tableName: trx
+            tableName: user
             columns:
               - column:
-                  name: user
+                  name: user_id
                   type: varchar
                   constraints:
                     nullable: false
+              - column:
+                  name: coinbase_api_key
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: coinbase_api_secret
+                  type: varchar
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coinbase_trx
+            columns:
+              - column:
+                  name: user_id
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: euro
+                  type: money
+                  constraints:
+                    nullable: false
+              - column:
+                  name: crypto
+                  type: money
+                  constraints:
+                    nullable: false
+              - column:
+                  name: buy_sell
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: euro_price
+                  type: money
+                  constraints:
+                    nullable: false
+              - column:
+                  name: crypto_name
+                  type: varchar
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:  
+            columnNames:  user_id
+            constraintName:  unique_user_user_id
+            tableName:  user
+        - addForeignKeyConstraint:
+            constraintName : fk_coinbase_trx_user  
+            baseColumnNames:  user_id  
+            baseTableName:  coinbase_trx
+            referencedColumnNames:  user_id  
+            referencedTableName:  user
