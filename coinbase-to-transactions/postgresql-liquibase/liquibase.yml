@@ -4,10 +4,10 @@ databaseChangeLog:
       author: toto
       changes:
         - createTable:
-            tableName: user
+            tableName: account
             columns:
               - column:
-                  name: user_id
+                  name: account_id
                   type: varchar
                   constraints:
                     nullable: false
@@ -25,7 +25,7 @@ databaseChangeLog:
             tableName: coinbase_trx
             columns:
               - column:
-                  name: user_id
+                  name: account_id
                   type: varchar
                   constraints:
                     nullable: false
@@ -60,12 +60,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addUniqueConstraint:  
-            columnNames:  user_id
-            constraintName:  unique_user_user_id
-            tableName:  user
+            columnNames:  account_id
+            constraintName:  unique_account_account_id
+            tableName:  account
         - addForeignKeyConstraint:
-            constraintName : fk_coinbase_trx_user  
-            baseColumnNames:  user_id  
+            constraintName : fk_coinbase_trx_account  
+            baseColumnNames:  account_id  
             baseTableName:  coinbase_trx
-            referencedColumnNames:  user_id  
-            referencedTableName:  user
+            referencedColumnNames:  account_id  
+            referencedTableName:  account

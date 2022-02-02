@@ -1,16 +1,12 @@
 import hmac
 import hashlib
-import time
+import imp
 import requests
-import os
-import schedule
-import time
+import utils
 from requests.auth import AuthBase
 
 
-# Before implementation, set environmental variables with the names API_KEY and API_SECRET
-API_KEY = os.getenv('API_KEY')
-API_SECRET = os.getenv('API_SECRET')
+logger = utils.init_log()
 
 class CoinbaseWalletAuth(AuthBase):
     def __init__(self, api_key, secret_key):
@@ -31,12 +27,9 @@ class CoinbaseWalletAuth(AuthBase):
 
         return request
 
-def load_coinbase():
-    print("hello")
-    time.sleep(12)
-    return
+def load_all_transactions(user):
     api_url = 'https://api.coinbase.com/v2/'
-    auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
+    auth = CoinbaseWalletAuth(user.coinbase_api_key, user.coinbase_api_secret)
 
     r = requests.get(api_url + 'accounts', auth=auth)
     json_response = r.json()
@@ -49,18 +42,4 @@ def load_coinbase():
             data = json_response.get('data')
             if len(data) > 0:
                 for trx in data:
-                    print(trx)
-
-schedule.every(10).seconds.do(load_coinbase)
-#schedule.every(10).minutes.do(job)
-#schedule.every().hour.do(job)
-#schedule.every().day.at("10:30").do(job)
-#schedule.every(5).to(10).minutes.do(job)
-#schedule.every().monday.do(job)
-#schedule.every().wednesday.at("13:15").do(job)
-#schedule.every().minute.at(":17").do(job)
-
-if __name__ == '__main__':
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+                    logger.debug(trx)

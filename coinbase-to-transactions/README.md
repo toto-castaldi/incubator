@@ -35,7 +35,7 @@ run it if something in the schema is changed
 
 ```
 . .venv/bin/activate
-cd batch
+cd application
 pip install -r requirements.txt
-API_KEY=[YOUR API KEY] API_SECRET=[YOUR API SECRET] python batch_server.py
+LOG_LEVEL=DEBUG ENV=DEV python batch_server.py
 ```
