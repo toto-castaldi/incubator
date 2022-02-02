@@ -3,9 +3,9 @@ import hashlib
 import time
 import requests
 import os
+import schedule
+import time
 from requests.auth import AuthBase
-from datetime import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 # Before implementation, set environmental variables with the names API_KEY and API_SECRET
@@ -32,6 +32,9 @@ class CoinbaseWalletAuth(AuthBase):
         return request
 
 def load_coinbase():
+    print("hello")
+    time.sleep(12)
+    return
     api_url = 'https://api.coinbase.com/v2/'
     auth = CoinbaseWalletAuth(API_KEY, API_SECRET)
 
@@ -48,12 +51,16 @@ def load_coinbase():
                 for trx in data:
                     print(trx)
 
-if __name__ == '__main__':
-    scheduler = BlockingScheduler()
-    scheduler.add_job(load_coinbase, 'interval', hours=5)
-    print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
+schedule.every(10).seconds.do(load_coinbase)
+#schedule.every(10).minutes.do(job)
+#schedule.every().hour.do(job)
+#schedule.every().day.at("10:30").do(job)
+#schedule.every(5).to(10).minutes.do(job)
+#schedule.every().monday.do(job)
+#schedule.every().wednesday.at("13:15").do(job)
+#schedule.every().minute.at(":17").do(job)
 
-    try:
-        scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+if __name__ == '__main__':
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
