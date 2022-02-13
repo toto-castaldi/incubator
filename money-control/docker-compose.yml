@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  api:
+    image: money-control-engine
+    ports:
+      - 5000:5000
+    command: python src/be_server.py
+    environment:
+      - FIREBASE_ACCOUNT_KEY_PATH=/firebase.json
+      - DB_HOST=db
+    volumes:
+      - $FIREBASE_ACCOUNT_KEY_PATH:/firebase.json
+  db:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_PASSWORD=moneymap
+      - POSTGRES_USER=moneymap
+      - POSTGRES_DB=moneymap
+      - PGDATA=/pgdata
+    user: 1000:1000 #TODO as dynamic or variable
+    ports:
+      - 5432:5432
+    volumes:
+      - $FOLDER_DATA:/pgdata
+  liquibase:
+    image: money-control-liquibase
+    environment:
+      - LIQUIBASE_URL=jdbc:postgresql://db/moneymap
+      - LIQUIBASE_USERNAME=moneymap
+      - LIQUIBASE_PASSWORD=moneymap
+    command: update
