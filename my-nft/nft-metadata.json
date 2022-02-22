@@ -1,0 +1,9 @@
+{
+    "attributes": [{
+        "trait_type": "Language",
+        "value": "Italian"
+    }],
+    "description": "Please say 'hello'.",
+    "image": "https://gateway.pinata.cloud/ipfs/QmbN3pDbZVHwq6LZHN4rBtj3355gqwVMULA72hwijysB1t",
+    "name": "Ciao"
+}
