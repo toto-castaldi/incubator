@@ -1,11 +1,11 @@
 from tkinter import *
 import time
 
-def init_gui(width = 800, height = 600):
+def init_gui(title, width = 800, height = 600):
     
     window = Tk()
 
-    window.title("Insertion sort")
+    window.title(title)
 
     window.geometry(f"{width}x{height}")
 
@@ -44,9 +44,9 @@ def print_array(width, height, canvas, arr, sleep_seconds=0.2, red=None ):
 
     canvas.update()
 
-def write_and_print_array(arr, index, new_value, width, height, canvas, index_red, sleep_seconds=0.2):
+def write_and_print_array(arr, index, new_value, width, height, canvas, red, sleep_seconds=0.2):
     write_array(arr, index, new_value)
-    print_array(width, height, canvas, arr, sleep_seconds, index_red)
+    print_array(width, height, canvas, arr, sleep_seconds, red)
 
 def read_array(arr, index):
     return arr[index - 1]
