@@ -53,3 +53,7 @@ def read_array(arr, index):
 
 def write_array(arr, index, new_value):
     arr[index - 1] = new_value
+
+def inclusive_range(start, end):
+    for i in range(start, end + 1):
+        yield i
