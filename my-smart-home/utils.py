@@ -18,9 +18,6 @@ log_level =  LOG_LEVELS.get(os.environ.get("LOG_LEVEL","INFO"))
 logger_filename = os.environ.get("LOG_FILE_NAME", None)
 logger = None
 
-def is_dev_env():
-  return os.getenv("ENV", None) == "DEV"
-
 def init_log():
   global logger
 

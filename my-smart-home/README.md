@@ -31,5 +31,5 @@ python scan_wizard.py
 ```bash
 . .venv/bin/activate
 pip install -r requirements.txt
-LOG_LEVEL=DEBUG ENV=DEV LIFX_API_KEY=[KEY] python smart_home.py
+LOG_LEVEL=DEBUG CONFIG=[YOUR_CONFIG_PATH] python smart_home.py
 ```
