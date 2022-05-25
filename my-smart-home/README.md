@@ -3,12 +3,13 @@ MY-SMART-HOME
 
 With [Flic library](https://github.com/50ButtonsEach/fliclib-linux-hci)
 
-
 # DEV
+
+Start flicd with *Flic library*
 
 ## PYTHON
 
-```
+```bash
 if [ ! -d ".venv" ]
 then
     pyenv install 3.9.5
@@ -16,3 +17,19 @@ then
     pip install virtualenv
     virtualenv .venv
 fi
+```
+
+## SCAN
+
+```bash
+. .venv/bin/activate
+python scan_wizard.py
+```
+
+## EXECUTE
+
+```bash
+. .venv/bin/activate
+pip install -r requirements.txt
+LOG_LEVEL=DEBUG ENV=DEV LIFX_API_KEY=[KEY] python smart_home.py
+```
