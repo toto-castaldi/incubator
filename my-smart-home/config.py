@@ -12,3 +12,15 @@ def get_config():
         the_config = json.loads(json_file)
 
   return the_config
+
+def search_button(bd_addr:str):
+  for button in the_config["buttons"]:
+    if button["bd_addr"] == bd_addr:
+      return button
+  return None
+
+def search_action(button, c_type):
+  for action in button["actions"]:
+    if action["type"] == c_type:
+      return action
+  return None

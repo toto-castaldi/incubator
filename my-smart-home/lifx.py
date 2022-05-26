@@ -9,7 +9,7 @@ def list_lights(api_token:string):
         "Authorization": "Bearer %s" % api_token,
     }
     logger.debug(api_token)
-    response = requests.get('https://api.lifx.com/v1/lights/all', headers=headers)
+    response = requests.get("https://api.lifx.com/v1/lights/all", headers=headers)
     logger.debug(response.json())
 
 def toggle(device_id:string, api_token:string):
@@ -17,5 +17,5 @@ def toggle(device_id:string, api_token:string):
         "Authorization": "Bearer %s" % api_token,
     }
     logger.debug(api_token)
-    response = requests.post('https://api.lifx.com/v1/lights/{device_id}/toggle', headers=headers)
+    response = requests.post(f"https://api.lifx.com/v1/lights/{device_id}/toggle", headers=headers)
     logger.debug(response.json())
