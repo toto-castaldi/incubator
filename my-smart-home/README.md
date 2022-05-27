@@ -7,6 +7,10 @@ With [Flic library](https://github.com/50ButtonsEach/fliclib-linux-hci)
 
 Start flicd with *Flic library*
 
+```bash
+./flicd-deamon.sh [FLIC_LIB_PATH]/flicd [FLIC_DB_PATH]
+```
+
 ## PYTHON
 
 ```bash
