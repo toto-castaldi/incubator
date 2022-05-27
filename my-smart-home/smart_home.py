@@ -8,12 +8,22 @@ c = config.get_config()
 
 client = fliclib.FlicClient("localhost")
 
-def wrapped_toggle(action_id):
+def wrapped_toggle_lifx(action_id):
 	logger.debug(action_id)
 	lifx.toggle(action_id, c["lifx_api_key"])
 
+def wrapped_down_lifx(action_id):
+	logger.debug(action_id)
+	lifx.state_delta(action_id, c["lifx_api_key"], brightness=-0.3)
+
+def wrapped_up_lifx(action_id):
+	logger.debug(action_id)
+	lifx.state_delta(action_id, c["lifx_api_key"], brightness=0.3)
+
 actions = {
-	"toggle-lifx" : wrapped_toggle
+	"toggle-lifx" : wrapped_toggle_lifx,
+	"down-lifx" : wrapped_down_lifx,
+	"up-lifx" : wrapped_up_lifx
 }
 
 def on_button_single_or_double_click_or_hold(channel, click_type, was_queued, time_diff):
